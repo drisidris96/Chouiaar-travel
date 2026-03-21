@@ -21,6 +21,7 @@ import AdminDashboard from "@/pages/admin/Dashboard";
 import ManageTrips from "@/pages/admin/ManageTrips";
 import ManageBookings from "@/pages/admin/ManageBookings";
 import ManageReservations from "@/pages/admin/ManageReservations";
+import ManageServiceRequests from "@/pages/admin/ManageServiceRequests";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -54,6 +55,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
     { path: "/admin/trips", label: "الرحلات" },
     { path: "/admin/bookings", label: "الحجوزات القديمة" },
     { path: "/admin/reservations", label: "🎫 طلبات الحجز" },
+    { path: "/admin/services", label: "✨ خدمات أخرى" },
   ];
 
   return (
@@ -136,6 +138,15 @@ function Router() {
               <ProtectedRoute component={() => (
                 <AdminLayout>
                   <ManageReservations />
+                </AdminLayout>
+              )} />
+            )}
+          </Route>
+          <Route path="/admin/services">
+            {() => (
+              <ProtectedRoute component={() => (
+                <AdminLayout>
+                  <ManageServiceRequests />
                 </AdminLayout>
               )} />
             )}
