@@ -1,18 +1,39 @@
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Clock, MessageCircle, Facebook, Instagram } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, MessageCircle, Facebook, Upload, X, FileImage, File } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", phone: "", email: "", message: "" });
+  const [files, setFiles] = useState<File[]>([]);
   const [sent, setSent] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFiles = (incoming: FileList | null) => {
+    if (!incoming) return;
+    const newFiles = Array.from(incoming).filter(
+      (f) => !files.find((ex) => ex.name === f.name && ex.size === f.size)
+    );
+    setFiles((prev) => [...prev, ...newFiles]);
+  };
+
+  const removeFile = (idx: number) => setFiles((prev) => prev.filter((_, i) => i !== idx));
+
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
+
+  const isImage = (f: File) => f.type.startsWith("image/");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // For now just show success (can be wired to email API later)
     setSent(true);
     setTimeout(() => setSent(false), 5000);
     setForm({ name: "", phone: "", email: "", message: "" });
+    setFiles([]);
   };
 
   const contacts = [
@@ -61,11 +82,7 @@ export default function Contact() {
       {/* Hero */}
       <section className="py-20 bg-gradient-to-br from-primary/10 via-background to-background relative overflow-hidden">
         <div className="container mx-auto px-4 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="inline-block bg-primary/10 text-primary px-5 py-2 rounded-full text-sm font-bold mb-4">
               نحن هنا لمساعدتك
             </span>
@@ -97,9 +114,7 @@ export default function Contact() {
                       <item.icon className="w-6 h-6" />
                     </div>
                     <h3 className="font-bold text-lg mb-2 hover:text-primary transition-colors">{item.title}</h3>
-                    {item.lines.map((l, j) => (
-                      <p key={j} className="text-muted-foreground text-sm">{l}</p>
-                    ))}
+                    {item.lines.map((l, j) => <p key={j} className="text-muted-foreground text-sm">{l}</p>)}
                   </a>
                 ) : (
                   <>
@@ -107,9 +122,7 @@ export default function Contact() {
                       <item.icon className="w-6 h-6" />
                     </div>
                     <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                    {item.lines.map((l, j) => (
-                      <p key={j} className="text-muted-foreground text-sm">{l}</p>
-                    ))}
+                    {item.lines.map((l, j) => <p key={j} className="text-muted-foreground text-sm">{l}</p>)}
                   </>
                 )}
               </motion.div>
@@ -131,7 +144,7 @@ export default function Contact() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-semibold mb-2 text-foreground">الاسم الكامل *</label>
+                    <label className="block text-sm font-semibold mb-2">الاسم الكامل *</label>
                     <input
                       type="text"
                       required
@@ -142,7 +155,7 @@ export default function Contact() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold mb-2 text-foreground">رقم الهاتف *</label>
+                    <label className="block text-sm font-semibold mb-2">رقم الهاتف *</label>
                     <input
                       type="tel"
                       required
@@ -155,7 +168,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-foreground">البريد الإلكتروني</label>
+                  <label className="block text-sm font-semibold mb-2">البريد الإلكتروني</label>
                   <input
                     type="email"
                     value={form.email}
@@ -166,15 +179,98 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-foreground">رسالتك *</label>
+                  <label className="block text-sm font-semibold mb-2">رسالتك *</label>
                   <textarea
                     required
-                    rows={5}
+                    rows={4}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     placeholder="اكتب استفساراتك أو طلباتك هنا..."
                     className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors resize-none"
                   />
+                </div>
+
+                {/* File Upload */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    المرفقات <span className="text-muted-foreground font-normal">(صور أو ملفات)</span>
+                  </label>
+
+                  {/* Drop Zone */}
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setDragging(false);
+                      handleFiles(e.dataTransfer.files);
+                    }}
+                    className={`cursor-pointer border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-200 ${
+                      dragging
+                        ? "border-primary bg-primary/5 scale-[1.01]"
+                        : "border-border/60 hover:border-primary/50 hover:bg-muted/30"
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <Upload className="w-6 h-6 text-primary" />
+                      </div>
+                      <p className="font-semibold text-foreground">اسحب الملفات هنا أو انقر للاختيار</p>
+                      <p className="text-sm text-muted-foreground">
+                        يدعم: صور (JPG, PNG, GIF) — PDF — Word — Excel
+                      </p>
+                    </div>
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+                    className="hidden"
+                    onChange={(e) => handleFiles(e.target.files)}
+                  />
+
+                  {/* File List */}
+                  {files.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {files.map((file, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-3 px-4 py-2.5 bg-muted/40 rounded-xl border border-border/40"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            {isImage(file)
+                              ? <FileImage className="w-4 h-4 text-primary" />
+                              : <File className="w-4 h-4 text-primary" />
+                            }
+                          </div>
+                          {isImage(file) && (
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              className="w-10 h-10 rounded-lg object-cover border border-border/40 flex-shrink-0"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{file.name}</p>
+                            <p className="text-xs text-muted-foreground">{formatSize(file.size)}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeFile(idx)}
+                            className="p-1 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-colors flex-shrink-0"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <p className="text-xs text-muted-foreground text-center">
+                        {files.length} ملف مرفق
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <Button type="submit" size="lg" className="w-full rounded-full h-13 text-base font-bold">
