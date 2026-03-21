@@ -1,0 +1,17 @@
+packages:
+  "framer-motion": "For elegant page transitions and scroll animations"
+  "recharts": "Admin dashboard analytics charts"
+  "date-fns": "Human-readable date formatting"
+
+images:
+  - path: "artifacts/travel-agency/public/images/logo-gold.png"
+    description: "Luxury travel agency logo, minimalist geometric shapes representing a compass or star, elegant warm gold on transparent background"
+    aspect_ratio: "1:1"
+  - path: "artifacts/travel-agency/public/images/arabic-pattern.png"
+    description: "Subtle elegant arabic geometric pattern, seamless, warm gold and sand tones, low contrast, perfect for a background texture"
+    aspect_ratio: "16:9"
+
+notes:
+  - The API schema provides all TanStack hooks via @workspace/api-client-react
+  - React Query invalidation keys are imported directly from the generated API
+  - Application defaults to Right-to-Left (RTL) for Arabic
