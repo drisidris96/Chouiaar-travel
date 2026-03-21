@@ -16,9 +16,11 @@ import Login from "@/pages/Login";
 import Visas from "@/pages/Visas";
 import Umrah from "@/pages/Umrah";
 import Contact from "@/pages/Contact";
+import Reservations from "@/pages/Reservations";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import ManageTrips from "@/pages/admin/ManageTrips";
 import ManageBookings from "@/pages/admin/ManageBookings";
+import ManageReservations from "@/pages/admin/ManageReservations";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -50,7 +52,8 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   const tabs = [
     { path: "/admin", label: "نظرة عامة" },
     { path: "/admin/trips", label: "الرحلات" },
-    { path: "/admin/bookings", label: "الحجوزات" },
+    { path: "/admin/bookings", label: "الحجوزات القديمة" },
+    { path: "/admin/reservations", label: "🎫 طلبات الحجز" },
   ];
 
   return (
@@ -97,6 +100,7 @@ function Router() {
           <Route path="/visas" component={Visas} />
           <Route path="/umrah" component={Umrah} />
           <Route path="/contact" component={Contact} />
+          <Route path="/reservations" component={Reservations} />
           <Route path="/login" component={Login} />
 
           {/* Admin Routes */}
@@ -123,6 +127,15 @@ function Router() {
               <ProtectedRoute component={() => (
                 <AdminLayout>
                   <ManageBookings />
+                </AdminLayout>
+              )} />
+            )}
+          </Route>
+          <Route path="/admin/reservations">
+            {() => (
+              <ProtectedRoute component={() => (
+                <AdminLayout>
+                  <ManageReservations />
                 </AdminLayout>
               )} />
             )}

@@ -8,11 +8,11 @@ export function Navbar() {
   const { user, logout } = useAuth();
 
   const links = [
-    { href: "/",        label: "الرئيسية",           icon: Home },
-    { href: "/visas",   label: "الفيزات الإلكترونية", icon: FileText },
-    { href: "/umrah",   label: "العمرة",               icon: Star },
-    { href: "/trips",   label: "الحجوزات",             icon: CalendarCheck },
-    { href: "/contact", label: "اتصل بنا",             icon: Phone },
+    { href: "/",             label: "الرئيسية",           icon: Home },
+    { href: "/visas",        label: "الفيزات الإلكترونية", icon: FileText },
+    { href: "/umrah",        label: "العمرة",               icon: Star },
+    { href: "/reservations", label: "الحجوزات",             icon: CalendarCheck },
+    { href: "/contact",      label: "اتصل بنا",             icon: Phone },
   ];
 
   return (
