@@ -13,6 +13,9 @@ import Home from "@/pages/Home";
 import Trips from "@/pages/Trips";
 import TripDetails from "@/pages/TripDetails";
 import Login from "@/pages/Login";
+import Visas from "@/pages/Visas";
+import Umrah from "@/pages/Umrah";
+import Contact from "@/pages/Contact";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import ManageTrips from "@/pages/admin/ManageTrips";
 import ManageBookings from "@/pages/admin/ManageBookings";
@@ -91,6 +94,9 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/trips" component={Trips} />
           <Route path="/trips/:id" component={TripDetails} />
+          <Route path="/visas" component={Visas} />
+          <Route path="/umrah" component={Umrah} />
+          <Route path="/contact" component={Contact} />
           <Route path="/login" component={Login} />
 
           {/* Admin Routes */}
