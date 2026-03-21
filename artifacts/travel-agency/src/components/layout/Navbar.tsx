@@ -39,23 +39,6 @@ export function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:bg-primary/10 hover:text-primary ${
-                  location === link.href
-                    ? "bg-primary/15 text-primary font-bold"
-                    : "text-foreground"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
           {/* Actions */}
           <div className="flex items-center gap-2">
             {user ? (
@@ -93,9 +76,9 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile Nav Buttons Row (visible on mobile/tablet, hidden on desktop) ── */}
-      <div className="lg:hidden bg-background border-b border-border/40 overflow-x-auto">
-        <div className="flex items-center gap-2 px-3 py-2 min-w-max">
+      {/* ── Nav Buttons Row (visible on ALL screen sizes) ── */}
+      <div className="bg-background border-b border-border/40 overflow-x-auto">
+        <div className="flex items-center justify-center gap-2 px-4 py-2.5 min-w-max mx-auto">
           {links.map((link) => {
             const Icon = link.icon;
             const active = location === link.href;
