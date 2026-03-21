@@ -71,7 +71,7 @@ export default function Umrah() {
               رحلة <span className="text-primary">العمرة</span>
             </h1>
             <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-              عش تجربة روحانية لا تُنسى في أقدس بقاع الأرض مع وكالة شوعير للسياحة والأسفار
+              عش تجربة روحانية لا تُنسى في أقدس بقاع الأرض مع وكالة شويعر للسياحة والأسفار
             </p>
           </motion.div>
         </div>
@@ -80,7 +80,7 @@ export default function Umrah() {
       {/* Why Us */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-serif font-bold text-center mb-12">لماذا تختار وكالة شوعير؟</h2>
+          <h2 className="text-3xl font-serif font-bold text-center mb-12">لماذا تختار وكالة شويعر؟</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {whyUs.map((item, i) => (
               <motion.div

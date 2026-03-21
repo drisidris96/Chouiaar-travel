@@ -40,13 +40,13 @@ export default function Home() {
             >
               <img
                 src="/images/logo-chouiaar.jpg"
-                alt="وكالة شوعير للسياحة والأسفار"
+                alt="وكالة شويعر للسياحة والأسفار"
                 className="h-28 md:h-36 w-auto rounded-2xl shadow-2xl border-2 border-white/20"
               />
             </motion.div>
 
             <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-3 leading-tight">
-              وكالة شوعير
+              وكالة شويعر
             </h1>
             <p className="text-primary text-xl md:text-2xl font-bold mb-5 tracking-wide">
               للسياحة والأسفار

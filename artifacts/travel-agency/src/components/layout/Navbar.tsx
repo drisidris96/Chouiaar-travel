@@ -19,7 +19,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full shadow-md">
       {/* Top Bar */}
       <div className="bg-primary text-primary-foreground text-center py-1.5 text-sm font-semibold tracking-wide">
-        وكالة شوعير للسياحة والأسفار &nbsp;|&nbsp; Chouiaar Travel Agency
+        وكالة شويعر للسياحة والأسفار &nbsp;|&nbsp; Chouiaar Travel Agency
       </div>
 
       {/* Main Row: Logo + Desktop Nav + Actions */}
@@ -30,11 +30,11 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
             <img
               src="/images/logo-chouiaar.jpg"
-              alt="وكالة شوعير"
+              alt="وكالة شويعر"
               className="h-12 w-auto rounded-xl object-contain border border-border/30 group-hover:scale-105 transition-transform duration-300"
             />
             <div className="hidden sm:flex flex-col leading-tight">
-              <span className="text-base font-bold text-foreground font-serif">وكالة شوعير</span>
+              <span className="text-base font-bold text-foreground font-serif">وكالة شويعر</span>
               <span className="text-xs text-muted-foreground">للسياحة والأسفار</span>
             </div>
           </Link>

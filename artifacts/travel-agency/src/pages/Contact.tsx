@@ -59,7 +59,7 @@ export default function Contact() {
     {
       icon: MapPin,
       title: "العنوان",
-      lines: ["الجزائر", "وكالة شوعير للسياحة والأسفار"],
+      lines: ["الجزائر", "وكالة شويعر للسياحة والأسفار"],
       color: "bg-primary/10 text-primary",
     },
     {

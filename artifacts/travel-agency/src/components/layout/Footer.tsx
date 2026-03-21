@@ -11,11 +11,11 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-3 mb-6 inline-flex">
               <img
                 src="/images/logo-chouiaar.jpg"
-                alt="وكالة شوعير"
+                alt="وكالة شويعر"
                 className="h-16 w-auto rounded-xl border border-white/10"
               />
               <div className="flex flex-col leading-tight">
-                <span className="font-serif text-xl font-bold text-white">وكالة شوعير</span>
+                <span className="font-serif text-xl font-bold text-white">وكالة شويعر</span>
                 <span className="text-primary text-sm font-semibold">للسياحة والأسفار</span>
               </div>
             </Link>
@@ -75,7 +75,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-8 text-center text-secondary-foreground/50 text-sm">
-          <p>© {new Date().getFullYear()} وكالة شوعير للسياحة والأسفار. جميع الحقوق محفوظة.</p>
+          <p>© {new Date().getFullYear()} وكالة شويعر للسياحة والأسفار. جميع الحقوق محفوظة.</p>
         </div>
       </div>
     </footer>
