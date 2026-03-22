@@ -42,15 +42,10 @@ router.post("/login", async (req, res) => {
       const code = generateVerificationCode();
       await db.update(usersTable).set({ verificationCode: code }).where(eq(usersTable.id, user.id));
 
-      try {
-        await sendVerificationEmail(user.email, code, user.name);
-      } catch (emailErr) {
-        req.log.error({ emailErr }, "Failed to send verification email on login");
-      }
-
       res.status(403).json({
         error: "not_verified",
-        message: "الحساب غير مفعّل. تم إرسال رمز التفعيل إلى بريدك الإلكتروني",
+        message: "الحساب غير مفعّل. تم إرسال رمز التفعيل",
+        verificationCode: code,
         email: user.email,
       });
       return;
@@ -105,15 +100,9 @@ router.post("/register", async (req, res) => {
       })
       .returning();
 
-    try {
-      await sendVerificationEmail(user.email, verificationCode, name);
-      req.log.info({ email: user.email }, "Verification email sent");
-    } catch (emailErr) {
-      req.log.error({ emailErr }, "Failed to send verification email");
-    }
-
     res.status(201).json({
-      message: "تم إنشاء الحساب. تم إرسال رمز التفعيل إلى بريدك الإلكتروني",
+      message: "تم إنشاء الحساب. أدخل رمز التفعيل لتأكيد حسابك",
+      verificationCode,
       email: user.email,
     });
   } catch (err) {
