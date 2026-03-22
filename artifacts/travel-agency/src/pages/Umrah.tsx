@@ -6,7 +6,6 @@ import { Star, Users, Hotel, Plane, Bus, HeadphonesIcon, Phone } from "lucide-re
 const packages = [
   {
     name: "باقة العمرة الاقتصادية",
-    price: "7,500",
     duration: "10 أيام",
     hotel: "فندق 3 نجوم",
     distance: "500 متر من الحرم",
@@ -16,7 +15,6 @@ const packages = [
   },
   {
     name: "باقة العمرة الفضية",
-    price: "12,000",
     duration: "12 يوم",
     hotel: "فندق 4 نجوم",
     distance: "200 متر من الحرم",
@@ -27,7 +25,6 @@ const packages = [
   },
   {
     name: "باقة العمرة الذهبية",
-    price: "18,000",
     duration: "15 يوم",
     hotel: "فندق 5 نجوم",
     distance: "50 متر من الحرم",
@@ -41,7 +38,7 @@ const whyUs = [
   { icon: Star, title: "خبرة 15 سنة", desc: "أكثر من 15 عاماً في تنظيم رحلات العمرة بخبرة واحترافية عالية" },
   { icon: Users, title: "آلاف المعتمرين", desc: "خدمنا أكثر من 10,000 معتمر من الجزائر وأفريقيا" },
   { icon: HeadphonesIcon, title: "دعم مستمر", desc: "فريق متواجد على مدار الساعة لخدمتك داخل وخارج المملكة" },
-  { icon: Hotel, title: "أفضل الفنادق", desc: "نختار لك أقرب الفنادق للحرم المكي بأسعار تنافسية" },
+  { icon: Hotel, title: "أفضل الفنادق", desc: "نختار لك أقرب الفنادق للحرم المكي بجودة عالية" },
 ];
 
 export default function Umrah() {
@@ -127,10 +124,7 @@ export default function Umrah() {
                 <div className={`bg-gradient-to-br ${pkg.color} p-8 text-white`}>
                   <h3 className="text-2xl font-bold mb-1">{pkg.name}</h3>
                   <p className="text-white/70 text-sm mb-4">{pkg.duration} • {pkg.hotel}</p>
-                  <div className="text-4xl font-bold">
-                    {pkg.price} <span className="text-lg font-normal opacity-80">ر.س</span>
-                  </div>
-                  <p className="text-white/60 text-sm mt-1">للشخص الواحد</p>
+                  <p className="text-white/80 text-sm mt-2">تواصل معنا للحصول على السعر</p>
                 </div>
 
                 <div className="bg-card p-6">

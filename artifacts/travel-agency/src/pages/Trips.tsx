@@ -3,13 +3,11 @@ import { useGetTrips } from "@workspace/api-client-react";
 import { TripCard } from "@/components/TripCard";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, SlidersHorizontal } from "lucide-react";
 
 export default function Trips() {
   const [destination, setDestination] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 20000]);
   const [debouncedDestination, setDebouncedDestination] = useState("");
 
   // Simple debounce for search
@@ -22,7 +20,6 @@ export default function Trips() {
 
   const { data: trips, isLoading } = useGetTrips({
     destination: debouncedDestination || undefined,
-    maxPrice: priceRange[1] < 20000 ? priceRange[1] : undefined,
   });
 
   return (
@@ -61,22 +58,6 @@ export default function Trips() {
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <Label>السعر الأقصى</Label>
-                  <span className="text-sm font-bold text-primary">
-                    {priceRange[1] >= 20000 ? "أي سعر" : `${priceRange[1].toLocaleString()} ر.س`}
-                  </span>
-                </div>
-                <Slider
-                  defaultValue={[20000]}
-                  max={20000}
-                  step={500}
-                  onValueChange={setPriceRange}
-                  className="py-4"
-                  dir="ltr"
-                />
-              </div>
             </div>
           </div>
         </aside>
@@ -106,7 +87,7 @@ export default function Trips() {
               </div>
               <h3 className="text-2xl font-bold mb-2">لا توجد نتائج</h3>
               <p className="text-muted-foreground max-w-md">
-                لم نتمكن من العثور على رحلات تطابق معايير البحث الخاصة بك. جرب تغيير الوجهة أو زيادة السعر.
+                لم نتمكن من العثور على رحلات تطابق معايير البحث الخاصة بك. جرب تغيير الوجهة.
               </p>
             </div>
           )}

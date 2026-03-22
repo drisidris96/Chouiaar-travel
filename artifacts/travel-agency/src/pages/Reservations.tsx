@@ -42,8 +42,8 @@ const COUNTRIES = [
 
 const TYPES = [
   { id: "hotel",  label: "حجز فندقي",        icon: Hotel,  desc: "احجز غرفتك في أفضل الفنادق" },
-  { id: "flight", label: "تذكرة طيران",       icon: Plane,  desc: "احجز رحلتك الجوية بأفضل الأسعار" },
-  { id: "both",   label: "فندق + طيران",      icon: Globe,  desc: "الباقة الكاملة بسعر مميز" },
+  { id: "flight", label: "تذكرة طيران",       icon: Plane,  desc: "احجز رحلتك الجوية معنا" },
+  { id: "both",   label: "فندق + طيران",      icon: Globe,  desc: "الباقة الكاملة للراحة التامة" },
 ];
 
 type Step = "type" | "country" | "form" | "done";

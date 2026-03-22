@@ -58,13 +58,7 @@ export function TripCard({ trip }: { trip: Trip }) {
           </p>
         </CardContent>
         
-        <CardFooter className="border-t border-border/50 pt-4 pb-4 flex justify-between items-center bg-muted/20">
-          <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground">السعر للشخص</span>
-            <span className="text-xl font-bold text-primary font-sans">
-              {trip.price.toLocaleString()} <span className="text-sm font-normal">ر.س</span>
-            </span>
-          </div>
+        <CardFooter className="border-t border-border/50 pt-4 pb-4 flex justify-center items-center bg-muted/20">
           <div className="text-primary font-semibold text-sm group-hover:underline underline-offset-4 decoration-2">
             عرض التفاصيل ←
           </div>

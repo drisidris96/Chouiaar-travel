@@ -183,13 +183,7 @@ export default function TripDetails() {
             <Card className="sticky top-28 border-border/50 shadow-xl shadow-black/5 rounded-3xl overflow-hidden">
               <div className="bg-secondary text-secondary-foreground p-6 text-center">
                 <p className="text-secondary-foreground/80 mb-2">احجز مقعدك الآن</p>
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-4xl font-bold font-sans tracking-tight">
-                    {trip.price.toLocaleString()}
-                  </span>
-                  <span className="text-lg">ر.س</span>
-                </div>
-                <p className="text-sm mt-2 opacity-80">للشخص الواحد</p>
+                <p className="text-sm mt-2 opacity-80">تواصل معنا للحصول على تفاصيل الأسعار</p>
               </div>
 
               <CardContent className="p-6">
@@ -256,12 +250,6 @@ export default function TripDetails() {
                   </div>
 
                   <div className="pt-4 border-t border-border/50">
-                    <div className="flex justify-between font-bold text-lg mb-6">
-                      <span>الإجمالي:</span>
-                      <span className="text-primary font-sans">
-                        {(trip.price * formData.numberOfPeople).toLocaleString()} ر.س
-                      </span>
-                    </div>
                     <Button 
                       type="submit" 
                       className="w-full h-14 rounded-xl text-lg shadow-lg shadow-primary/25"
