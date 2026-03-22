@@ -386,6 +386,14 @@ export default function Login() {
                 <p className="text-base font-bold text-foreground">يرجى إدخال رمز التفعيل أدناه</p>
               </div>
 
+              {displayedCode && (
+                <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
+                  <p className="text-sm text-green-700 font-medium mb-1">رمز التفعيل الخاص بك:</p>
+                  <p className="text-3xl font-bold text-green-800 tracking-[0.3em] dir-ltr">{displayedCode}</p>
+                  <p className="text-xs text-green-600 mt-1">انسخ الرمز وأدخله في الحقل أدناه</p>
+                </div>
+              )}
+
               <div className="space-y-1.5">
                 <Label>رمز التفعيل (6 أرقام)</Label>
                 <Input
