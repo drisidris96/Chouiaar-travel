@@ -6,6 +6,7 @@ import bookingsRouter from "./bookings";
 import adminRouter from "./admin";
 import reservationsRouter from "./reservations";
 import serviceRequestsRouter from "./service-requests";
+import visaRequestsRouter from "./visa-requests";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use("/bookings", bookingsRouter);
 router.use("/admin", adminRouter);
 router.use("/reservations", reservationsRouter);
 router.use("/service-requests", serviceRequestsRouter);
+router.use("/visa-requests", visaRequestsRouter);
 
 export default router;

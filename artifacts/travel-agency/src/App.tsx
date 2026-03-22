@@ -22,6 +22,7 @@ import ManageTrips from "@/pages/admin/ManageTrips";
 import ManageBookings from "@/pages/admin/ManageBookings";
 import ManageReservations from "@/pages/admin/ManageReservations";
 import ManageServiceRequests from "@/pages/admin/ManageServiceRequests";
+import ManageVisaRequests from "@/pages/admin/ManageVisaRequests";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -55,6 +56,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
     { path: "/admin/trips", label: "الرحلات" },
     { path: "/admin/bookings", label: "الحجوزات القديمة" },
     { path: "/admin/reservations", label: "🎫 طلبات الحجز" },
+    { path: "/admin/visas", label: "🌍 طلبات الفيزا" },
     { path: "/admin/services", label: "✨ خدمات أخرى" },
   ];
 
@@ -138,6 +140,15 @@ function Router() {
               <ProtectedRoute component={() => (
                 <AdminLayout>
                   <ManageReservations />
+                </AdminLayout>
+              )} />
+            )}
+          </Route>
+          <Route path="/admin/visas">
+            {() => (
+              <ProtectedRoute component={() => (
+                <AdminLayout>
+                  <ManageVisaRequests />
                 </AdminLayout>
               )} />
             )}
