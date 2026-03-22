@@ -18,3 +18,9 @@ id = "uaBmxqPy7GXK_yzelKBgV"
 uri = "file://project-documentation.md"
 type = "text"
 title = "الملف الكامل — وكالة شويعر للسياحة والأسفار"
+
+[[outputs]]
+id = "W3qAi4Vdw-Nwu7D_T6eJ5"
+uri = "file://chouiaar-travel-agency.zip"
+type = "unspecified"
+title = "وكالة شويعر للسياحة والأسفار — المشروع الكامل (ZIP)"
