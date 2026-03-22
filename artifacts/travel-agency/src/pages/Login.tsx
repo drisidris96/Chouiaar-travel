@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useLocation } from "wouter";
+import { useState, useEffect } from "react";
+import { useLocation, useSearch } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,9 @@ export default function Login() {
   const [, setLocation] = useLocation();
   const { login, user } = useAuth();
   const { toast } = useToast();
-  const [mode, setMode] = useState<Mode>("login");
+  const searchStr = useSearch();
+  const initialMode = new URLSearchParams(searchStr).get("tab") === "register" ? "register" : "login";
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [isLoading, setIsLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
 
@@ -387,7 +389,7 @@ export default function Login() {
                 <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
                   <p className="text-sm text-green-700 font-medium mb-1">رمز التفعيل:</p>
                   <p className="text-3xl font-bold text-green-800 tracking-[0.3em]">{displayedCode}</p>
-                  <p className="text-xs text-green-600 mt-2">في النسخة النهائية سيُرسل الرمز عبر البريد الإلكتروني</p>
+                  <p className="text-xs text-green-600 mt-2">انسخ الرمز وأدخله في الحقل أدناه</p>
                 </div>
               )}
 
@@ -450,7 +452,7 @@ export default function Login() {
                 <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
                   <p className="text-sm text-green-700 font-medium mb-1">رمز الاسترجاع الخاص بك:</p>
                   <p className="text-2xl font-bold text-green-800 tracking-widest">{resetToken}</p>
-                  <p className="text-xs text-green-600 mt-1">في النسخة النهائية سيُرسل عبر البريد الإلكتروني</p>
+                  <p className="text-xs text-green-600 mt-1">انسخ الرمز وأدخله في الحقل أدناه</p>
                 </div>
               )}
               <div className="space-y-1.5">

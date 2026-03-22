@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, Home, FileText, Star, CalendarCheck, Phone, Sparkles, User, LogIn } from "lucide-react";
+import { LogOut, LayoutDashboard, Home, FileText, Star, CalendarCheck, Phone, Sparkles, User, LogIn, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { ServiceRequestModal } from "@/components/ServiceRequestModal";
 
@@ -68,16 +68,27 @@ export function Navbar() {
                   </Button>
                 </>
               ) : (
-                <Link href="/login">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full font-semibold px-4 border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all gap-1.5"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    <span className="hidden sm:inline">تسجيل الدخول</span>
-                  </Button>
-                </Link>
+                <>
+                  <Link href="/login">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full font-semibold px-4 border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all gap-1.5"
+                    >
+                      <LogIn className="w-4 h-4" />
+                      <span className="hidden sm:inline">تسجيل الدخول</span>
+                    </Button>
+                  </Link>
+                  <Link href="/login?tab=register">
+                    <Button
+                      size="sm"
+                      className="rounded-full font-semibold px-4 gap-1.5"
+                    >
+                      <UserPlus className="w-4 h-4" />
+                      <span className="hidden sm:inline">إنشاء حساب</span>
+                    </Button>
+                  </Link>
+                </>
               )}
             </div>
           </div>
