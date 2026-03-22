@@ -381,19 +381,10 @@ export default function Login() {
 
           {mode === "verify" && (
             <form onSubmit={handleVerify} className="space-y-5">
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-center">
-                <Mail className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                <p className="text-sm text-blue-700 font-medium">تم إرسال رمز التفعيل إلى:</p>
-                <p className="text-sm text-blue-800 font-bold mt-1" dir="ltr">{verifyEmail}</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl text-center">
+                <ShieldCheck className="w-10 h-10 text-primary mx-auto mb-2" />
+                <p className="text-base font-bold text-foreground">يرجى إدخال رمز التفعيل أدناه</p>
               </div>
-
-              {displayedCode && (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
-                  <p className="text-sm text-green-700 font-medium mb-1">رمز التفعيل:</p>
-                  <p className="text-3xl font-bold text-green-800 tracking-[0.3em]">{displayedCode}</p>
-                  <p className="text-xs text-green-600 mt-2">انسخ الرمز وأدخله في الحقل أدناه</p>
-                </div>
-              )}
 
               <div className="space-y-1.5">
                 <Label>رمز التفعيل (6 أرقام)</Label>
