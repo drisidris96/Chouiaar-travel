@@ -40,21 +40,23 @@ export default function Contact() {
     {
       icon: Phone,
       title: "اتصل بنا",
-      lines: ["+213 XX XX XX XX", "+213 XX XX XX XX"],
+      lines: ["+213 74 71 84 96"],
       color: "bg-green-500/10 text-green-600",
+      href: "tel:+21374718496",
     },
     {
       icon: MessageCircle,
       title: "واتساب",
-      lines: ["تواصل معنا مباشرة", "متاح 24/7"],
+      lines: ["تواصل معنا مباشرة", "+213 774 71 84 96"],
       color: "bg-emerald-500/10 text-emerald-600",
-      href: "https://wa.me/213XXXXXXXXX",
+      href: "https://wa.me/213774718496",
     },
     {
       icon: Mail,
       title: "البريد الإلكتروني",
-      lines: ["info@chouiaartravel.com", "booking@chouiaartravel.com"],
+      lines: ["chouiaartravelagency@gmail.com"],
       color: "bg-blue-500/10 text-blue-600",
+      href: "mailto:chouiaartravelagency@gmail.com",
     },
     {
       icon: MapPin,
@@ -73,7 +75,7 @@ export default function Contact() {
       title: "تابعنا على فيسبوك",
       lines: ["Chouiaar Travel Agency", "آخر العروض والأخبار"],
       color: "bg-indigo-500/10 text-indigo-600",
-      href: "https://facebook.com/chouiaartravel",
+      href: "https://www.facebook.com/share/1CEBKfuqDo/",
     },
   ];
 
