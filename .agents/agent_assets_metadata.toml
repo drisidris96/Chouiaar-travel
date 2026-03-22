@@ -6,3 +6,9 @@ id = "pPPFMW1HEzHXL3L9ve-pK"
 uri = "file://travel-agency-project.tar.gz"
 type = "unspecified"
 title = "مشروع وكالة شويعر للسياحة والأسفار - النسخة الكاملة"
+
+[[outputs]]
+id = "SPfUZGYcxdhB3iH_SSQ1P"
+uri = "file://travel-agency-final.tar.gz"
+type = "unspecified"
+title = "مشروع وكالة شويعر للسياحة والأسفار - النسخة النهائية"
