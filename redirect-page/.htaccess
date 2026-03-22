@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^(.*)$ https://81b9f49d-448c-4546-a0d9-66b5ea436c08-00-1e9c3h9tug0sb.kirk.replit.dev/$1 [R=301,L]
