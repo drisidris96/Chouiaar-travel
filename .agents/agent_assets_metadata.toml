@@ -12,3 +12,9 @@ id = "SPfUZGYcxdhB3iH_SSQ1P"
 uri = "file://travel-agency-final.tar.gz"
 type = "unspecified"
 title = "مشروع وكالة شويعر للسياحة والأسفار - النسخة النهائية"
+
+[[outputs]]
+id = "uaBmxqPy7GXK_yzelKBgV"
+uri = "file://project-documentation.md"
+type = "text"
+title = "الملف الكامل — وكالة شويعر للسياحة والأسفار"
