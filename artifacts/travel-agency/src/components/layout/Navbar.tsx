@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ServiceRequestModal } from "@/components/ServiceRequestModal";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage, LanguageSwitcher } from "@/i18n/LanguageContext";
+import { ClockBar } from "./ClockBar";
 
 export function Navbar() {
   const [location, setLocation] = useLocation();
@@ -37,6 +38,7 @@ export function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full shadow-md">
+        <ClockBar />
         <div className="bg-background/95 backdrop-blur border-b border-border/40">
           <div className="container mx-auto px-4 h-20 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 group flex-shrink-0">

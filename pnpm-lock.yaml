@@ -559,6 +559,10 @@ importers:
         version: 3.25.76
 
   artifacts/travel-agency:
+    dependencies:
+      hijri-converter:
+        specifier: ^1.1.1
+        version: 1.1.1
     devDependencies:
       '@hookform/resolvers':
         specifier: ^3.10.0
@@ -3973,6 +3977,9 @@ packages:
 
   hermes-parser@0.33.3:
     resolution: {integrity: sha512-Yg3HgaG4CqgyowtYjX/FsnPAuZdHOqSMtnbpylbptsQ9nwwSKsy6uRWcGO5RK0EqiX12q8HvDWKgeAVajRO5DA==}
+
+  hijri-converter@1.1.1:
+    resolution: {integrity: sha512-uY2oDZllg7wcgvY7rdrM1VUE5iEqNjKGtrBUJlzniAsY73FuC5mb0kzdqLE/bU9Q50Iwhn6b9/Udw8SUIXHlhQ==}
 
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
@@ -9875,6 +9882,8 @@ snapshots:
   hermes-parser@0.33.3:
     dependencies:
       hermes-estree: 0.33.3
+
+  hijri-converter@1.1.1: {}
 
   hoist-non-react-statics@3.3.2:
     dependencies:
