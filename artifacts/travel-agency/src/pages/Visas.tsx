@@ -12,38 +12,72 @@ import {
 
 const BASE = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "") + "/api";
 
-const EVISA_COUNTRIES = [
-  { code: "TR", name: "تركيا", flag: "🇹🇷", price: "150", duration: "3-5 أيام" },
-  { code: "AE", name: "الإمارات العربية المتحدة", flag: "🇦🇪", price: "200", duration: "1-2 يوم" },
-  { code: "AZ", name: "أذربيجان", flag: "🇦🇿", price: "120", duration: "3 أيام" },
-  { code: "ET", name: "إثيوبيا", flag: "🇪🇹", price: "80", duration: "1-3 أيام" },
-  { code: "IN", name: "الهند", flag: "🇮🇳", price: "100", duration: "3-5 أيام" },
-  { code: "LK", name: "سريلانكا", flag: "🇱🇰", price: "70", duration: "1-2 يوم" },
-  { code: "KH", name: "كمبوديا", flag: "🇰🇭", price: "60", duration: "1-3 أيام" },
-  { code: "MM", name: "ميانمار", flag: "🇲🇲", price: "90", duration: "3-5 أيام" },
-  { code: "KE", name: "كينيا", flag: "🇰🇪", price: "80", duration: "2-3 أيام" },
-  { code: "TZ", name: "تنزانيا", flag: "🇹🇿", price: "90", duration: "3-5 أيام" },
-  { code: "UG", name: "أوغندا", flag: "🇺🇬", price: "80", duration: "2-3 أيام" },
-  { code: "RW", name: "رواندا", flag: "🇷🇼", price: "60", duration: "1-3 أيام" },
-  { code: "MG", name: "مدغشقر", flag: "🇲🇬", price: "70", duration: "2-5 أيام" },
-  { code: "MZ", name: "موزمبيق", flag: "🇲🇿", price: "80", duration: "3-5 أيام" },
-  { code: "ZM", name: "زامبيا", flag: "🇿🇲", price: "80", duration: "2-3 أيام" },
-  { code: "ZW", name: "زيمبابوي", flag: "🇿🇼", price: "70", duration: "3-5 أيام" },
-  { code: "LA", name: "لاوس", flag: "🇱🇦", price: "60", duration: "1-3 أيام" },
-  { code: "VN", name: "فيتنام", flag: "🇻🇳", price: "80", duration: "3-5 أيام" },
-  { code: "BH", name: "البحرين", flag: "🇧🇭", price: "100", duration: "1-2 يوم" },
-  { code: "OM", name: "سلطنة عُمان", flag: "🇴🇲", price: "120", duration: "1-3 أيام" },
-  { code: "MY", name: "ماليزيا", flag: "🇲🇾", price: "100", duration: "2-3 أيام" },
-  { code: "TJ", name: "طاجيكستان", flag: "🇹🇯", price: "70", duration: "2-3 أيام" },
-  { code: "UZ", name: "أوزبكستان", flag: "🇺🇿", price: "80", duration: "2-3 أيام" },
-  { code: "GE", name: "جورجيا", flag: "🇬🇪", price: "60", duration: "1-3 أيام" },
-  { code: "AM", name: "أرمينيا", flag: "🇦🇲", price: "50", duration: "1-2 يوم" },
-  { code: "EG", name: "مصر", flag: "🇪🇬", price: "80", duration: "1-3 أيام" },
-  { code: "JO", name: "الأردن", flag: "🇯🇴", price: "90", duration: "1-3 أيام" },
-  { code: "ID", name: "إندونيسيا", flag: "🇮🇩", price: "70", duration: "1-3 أيام" },
-  { code: "TH", name: "تايلاند", flag: "🇹🇭", price: "80", duration: "1-3 أيام" },
-  { code: "SA", name: "المملكة العربية السعودية", flag: "🇸🇦", price: "130", duration: "1-2 يوم" },
+type Country = { code: string; name: string; flag: string; note?: string };
+type Continent = { name: string; emoji: string; countries: Country[] };
+
+const CONTINENTS: Continent[] = [
+  {
+    name: "آسيا والشرق الأوسط",
+    emoji: "🌏",
+    countries: [
+      { code: "AE", name: "الإمارات العربية المتحدة", flag: "🇦🇪" },
+      { code: "OM", name: "سلطنة عمان", flag: "🇴🇲" },
+      { code: "BH", name: "البحرين", flag: "🇧🇭" },
+      { code: "QA", name: "قطر", flag: "🇶🇦" },
+      { code: "JO", name: "الأردن", flag: "🇯🇴" },
+      { code: "SA", name: "السعودية", flag: "🇸🇦" },
+      { code: "AZ", name: "أذربيجان", flag: "🇦🇿" },
+      { code: "AM", name: "أرمينيا", flag: "🇦🇲" },
+      { code: "UZ", name: "أوزبكستان", flag: "🇺🇿" },
+      { code: "TJ", name: "طاجيكستان", flag: "🇹🇯" },
+      { code: "LK", name: "سريلانكا", flag: "🇱🇰" },
+      { code: "SG", name: "سنغافورة", flag: "🇸🇬" },
+      { code: "VN", name: "فيتنام", flag: "🇻🇳" },
+      { code: "PK", name: "باكستان", flag: "🇵🇰" },
+      { code: "MM", name: "ميانمار", flag: "🇲🇲" },
+      { code: "IR", name: "إيران", flag: "🇮🇷" },
+      { code: "KG", name: "قيرغيزستان", flag: "🇰🇬" },
+      { code: "KZ", name: "كازاخستان", flag: "🇰🇿" },
+    ],
+  },
+  {
+    name: "إفريقيا",
+    emoji: "🌍",
+    countries: [
+      { code: "KE", name: "كينيا", flag: "🇰🇪", note: "عبر نظام تصريح السفر الإلكتروني eTA" },
+      { code: "ZA", name: "جنوب أفريقيا", flag: "🇿🇦" },
+      { code: "ET", name: "إثيوبيا", flag: "🇪🇹" },
+      { code: "TZ", name: "تنزانيا", flag: "🇹🇿" },
+      { code: "RW", name: "رواندا", flag: "🇷🇼" },
+      { code: "CI", name: "كوت ديفوار", flag: "🇨🇮" },
+      { code: "GA", name: "الغابون", flag: "🇬🇦" },
+      { code: "ZM", name: "زامبيا", flag: "🇿🇲" },
+      { code: "LS", name: "ليسوتو", flag: "🇱🇸" },
+      { code: "DJ", name: "جيبوتي", flag: "🇩🇯" },
+    ],
+  },
+  {
+    name: "الأمريكتان ومنطقة البحر الكاريبي",
+    emoji: "🌎",
+    countries: [
+      { code: "CO", name: "كولومبيا", flag: "🇨🇴" },
+      { code: "AG", name: "أنتيغوا وباربودا", flag: "🇦🇬" },
+      { code: "BS", name: "جزر البهاما", flag: "🇧🇸" },
+      { code: "KN", name: "سانت كيتس ونيفيس", flag: "🇰🇳" },
+    ],
+  },
+  {
+    name: "أوروبا وأوقيانوسيا",
+    emoji: "🌐",
+    countries: [
+      { code: "AL", name: "ألبانيا", flag: "🇦🇱" },
+      { code: "MD", name: "مولدوفا", flag: "🇲🇩" },
+      { code: "AU", name: "أستراليا", flag: "🇦🇺", note: "تأشيرة زائر إلكترونية" },
+    ],
+  },
 ];
+
+const ALL_COUNTRIES = CONTINENTS.flatMap(c => c.countries);
 
 const VISA_TYPES = [
   { id: "tourism", label: "سياحية" },
@@ -59,7 +93,8 @@ export default function Visas() {
   const { toast } = useToast();
   const [step, setStep] = useState<Step>("country");
   const [search, setSearch] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState<typeof EVISA_COUNTRIES[0] | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const [activeContinent, setActiveContinent] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [form, setForm] = useState({
@@ -76,9 +111,14 @@ export default function Visas() {
   const photoRef = useRef<HTMLInputElement>(null);
   const passportRef = useRef<HTMLInputElement>(null);
 
-  const filtered = EVISA_COUNTRIES.filter(c =>
-    c.name.includes(search) || c.code.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredContinents = search
+    ? CONTINENTS.map(cont => ({
+        ...cont,
+        countries: cont.countries.filter(c =>
+          c.name.includes(search) || c.code.toLowerCase().includes(search.toLowerCase())
+        ),
+      })).filter(cont => cont.countries.length > 0)
+    : CONTINENTS;
 
   const handleFileChange = (file: File | null, type: "photo" | "passport") => {
     if (!file) return;
@@ -177,27 +217,62 @@ export default function Visas() {
                     onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {filtered.map((country) => (
-                    <motion.button
-                      key={country.code}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => { setSelectedCountry(country); setStep("form"); }}
-                      className={`p-4 rounded-2xl border-2 text-center transition-all hover:shadow-lg ${
-                        selectedCountry?.code === country.code
-                          ? "border-primary bg-primary/5 shadow-md"
-                          : "border-border/50 bg-card hover:border-primary/40"
-                      }`}
-                    >
-                      <div className="text-3xl mb-2">{country.flag}</div>
-                      <div className="font-bold text-sm mb-1">{country.name}</div>
-                      <div className="text-xs text-primary font-semibold">{country.price} د.ج</div>
-                      <div className="text-xs text-muted-foreground">{country.duration}</div>
-                    </motion.button>
-                  ))}
-                </div>
-                {filtered.length === 0 && (
+                {!search && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                    {CONTINENTS.map((cont) => (
+                      <motion.button
+                        key={cont.name}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setActiveContinent(activeContinent === cont.name ? null : cont.name)}
+                        className={`p-5 rounded-2xl border-2 text-center transition-all ${
+                          activeContinent === cont.name
+                            ? "border-primary bg-primary/10 shadow-lg"
+                            : "border-border/50 bg-card hover:border-primary/40 hover:shadow-md"
+                        }`}
+                      >
+                        <div className="text-3xl mb-2">{cont.emoji}</div>
+                        <div className="font-bold text-sm">{cont.name}</div>
+                        <div className="text-xs text-muted-foreground mt-1">{cont.countries.length} دولة</div>
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
+
+                {filteredContinents.map((cont) => {
+                  if (!search && activeContinent && activeContinent !== cont.name) return null;
+                  if (!search && !activeContinent) return null;
+                  return (
+                    <div key={cont.name} className="mb-8">
+                      <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                        <span className="text-2xl">{cont.emoji}</span> {cont.name}
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        {cont.countries.map((country) => (
+                          <motion.button
+                            key={country.code}
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={() => { setSelectedCountry(country); setStep("form"); }}
+                            className={`p-4 rounded-2xl border-2 text-center transition-all hover:shadow-lg ${
+                              selectedCountry?.code === country.code
+                                ? "border-primary bg-primary/5 shadow-md"
+                                : "border-border/50 bg-card hover:border-primary/40"
+                            }`}
+                          >
+                            <div className="text-3xl mb-2">{country.flag}</div>
+                            <div className="font-bold text-sm">{country.name}</div>
+                            {country.note && (
+                              <div className="text-xs text-muted-foreground mt-1 leading-tight">{country.note}</div>
+                            )}
+                          </motion.button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {search && filteredContinents.length === 0 && (
                   <div className="text-center py-16 text-muted-foreground">
                     <Globe className="w-12 h-12 mx-auto mb-3 opacity-30" />
                     <p>لا توجد نتائج لبحثك</p>
@@ -218,7 +293,7 @@ export default function Visas() {
                   <span className="text-4xl">{selectedCountry.flag}</span>
                   <div>
                     <h3 className="font-bold text-lg">فيزا إلكترونية — {selectedCountry.name}</h3>
-                    <p className="text-sm text-muted-foreground">السعر: <span className="text-primary font-bold">{selectedCountry.price} د.ج</span> • المدة: {selectedCountry.duration}</p>
+                    {selectedCountry.note && <p className="text-sm text-muted-foreground">{selectedCountry.note}</p>}
                   </div>
                 </div>
 
