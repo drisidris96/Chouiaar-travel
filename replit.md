@@ -61,7 +61,9 @@ Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` 
 - Auth: `src/routes/auth.ts` — login, register, verify (email code), resend-code, forgot-password, reset-password, logout, me
 - Admin routes protected with `requireAdmin` middleware: admin/stats, trips (POST/PUT/DELETE), bookings (PATCH), reservations (GET/PATCH), service-requests (GET/PATCH), visa-requests (GET/PATCH)
 - Admin credentials: `admin@travel.com` / `admin123` (auto-seeded, verified=true)
-- Auth flow: register → 6-digit verification code → verify → login; unverified users prompted to verify on login attempt
+- Email: `src/utils/mailer.ts` — Gmail SMTP via nodemailer (sends verification codes, password reset codes, email change codes)
+- Auth flow: register → 6-digit code sent via email → verify → login; forgot-password sends reset code via email
+- Env vars: `GMAIL_USER`, `GMAIL_APP_PASSWORD` (App Password from Google)
 - Depends on: `@workspace/db`, `@workspace/api-zod`
 - `pnpm --filter @workspace/api-server run dev` — run the dev server
 - `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)

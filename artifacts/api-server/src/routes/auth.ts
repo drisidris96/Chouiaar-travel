@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { db, usersTable } from "@workspace/db";
 import { eq, or } from "drizzle-orm";
 import crypto from "crypto";
+import { sendVerificationEmail, sendPasswordResetEmail } from "../utils/mailer";
 
 const router: IRouter = Router();
 
@@ -40,10 +41,16 @@ router.post("/login", async (req, res) => {
     if (!user.verified && user.role !== "admin") {
       const code = generateVerificationCode();
       await db.update(usersTable).set({ verificationCode: code }).where(eq(usersTable.id, user.id));
+
+      try {
+        await sendVerificationEmail(user.email, code, user.name);
+      } catch (emailErr) {
+        req.log.error({ emailErr }, "Failed to send verification email on login");
+      }
+
       res.status(403).json({
         error: "not_verified",
-        message: "الحساب غير مفعّل. تم إرسال رمز التفعيل",
-        verificationCode: code,
+        message: "الحساب غير مفعّل. تم إرسال رمز التفعيل إلى بريدك الإلكتروني",
         email: user.email,
       });
       return;
@@ -98,9 +105,15 @@ router.post("/register", async (req, res) => {
       })
       .returning();
 
+    try {
+      await sendVerificationEmail(user.email, verificationCode, name);
+      req.log.info({ email: user.email }, "Verification email sent");
+    } catch (emailErr) {
+      req.log.error({ emailErr }, "Failed to send verification email");
+    }
+
     res.status(201).json({
-      message: "تم إنشاء الحساب. أدخل رمز التفعيل لتأكيد حسابك",
-      verificationCode,
+      message: "تم إنشاء الحساب. تم إرسال رمز التفعيل إلى بريدك الإلكتروني",
       email: user.email,
     });
   } catch (err) {
@@ -176,9 +189,14 @@ router.post("/resend-code", async (req, res) => {
     const code = generateVerificationCode();
     await db.update(usersTable).set({ verificationCode: code }).where(eq(usersTable.id, user.id));
 
+    try {
+      await sendVerificationEmail(user.email, code, user.name);
+    } catch (emailErr) {
+      req.log.error({ emailErr }, "Failed to send verification email");
+    }
+
     res.json({
-      message: "تم إرسال رمز التفعيل",
-      verificationCode: code,
+      message: "تم إرسال رمز التفعيل إلى بريدك الإلكتروني",
     });
   } catch (err) {
     req.log.error({ err }, "Resend code error");
@@ -204,12 +222,19 @@ router.post("/forgot-password", async (req, res) => {
       return;
     }
 
-    const token = generateResetToken();
-    await db.update(usersTable).set({ resetToken: token }).where(eq(usersTable.id, user.id));
+    const code = generateVerificationCode();
+    await db.update(usersTable).set({ resetToken: code }).where(eq(usersTable.id, user.id));
+
+    try {
+      await sendPasswordResetEmail(user.email, code, user.name);
+      req.log.info({ email: user.email }, "Password reset email sent");
+    } catch (emailErr) {
+      req.log.error({ emailErr }, "Failed to send password reset email");
+    }
 
     res.json({
-      message: "تم إرسال رمز الاسترجاع",
-      resetToken: token,
+      message: "تم إرسال رمز استرجاع كلمة المرور إلى بريدك الإلكتروني",
+      email: user.email,
     });
   } catch (err) {
     req.log.error({ err }, "Forgot password error");

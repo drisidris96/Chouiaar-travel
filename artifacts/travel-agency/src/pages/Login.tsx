@@ -29,10 +29,8 @@ export default function Login() {
   const [registerForm, setRegisterForm] = useState({ name: "", email: "", phone: "", password: "", confirm: "" });
   const [verifyEmail, setVerifyEmail] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
-  const [displayedCode, setDisplayedCode] = useState("");
   const [forgotValue, setForgotValue] = useState("");
-  const [resetToken, setResetToken] = useState("");
-  const [tokenInput, setTokenInput] = useState("");
+  const [resetCode, setResetCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNew, setConfirmNew] = useState("");
 
@@ -59,7 +57,6 @@ export default function Login() {
 
       if (res.status === 403 && data.error === "not_verified") {
         setVerifyEmail(data.email);
-        setDisplayedCode(data.verificationCode || "");
         setMode("verify");
         toast({ title: t("login.notVerified"), description: t("login.notVerifiedDesc") });
         return;
@@ -108,7 +105,6 @@ export default function Login() {
       if (!res.ok) throw new Error(data.message);
 
       setVerifyEmail(registerForm.email);
-      setDisplayedCode(data.verificationCode || "");
       setMode("verify");
       toast({ title: t("login.accountCreated"), description: t("login.accountCreatedDesc") });
     } catch (err: any) {
@@ -157,7 +153,6 @@ export default function Login() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      setDisplayedCode(data.verificationCode || "");
       toast({ title: t("login.codeResent") });
     } catch (err: any) {
       toast({ variant: "destructive", title: t("common.error"), description: err.message });
@@ -177,7 +172,6 @@ export default function Login() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      setResetToken(data.resetToken);
       setMode("reset");
       toast({ title: t("login.resetSent") });
     } catch (err: any) {
@@ -198,7 +192,7 @@ export default function Login() {
       const res = await fetch(`${API}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: tokenInput || resetToken, newPassword }),
+        body: JSON.stringify({ token: resetCode, newPassword }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
@@ -383,18 +377,11 @@ export default function Login() {
 
           {mode === "verify" && (
             <form onSubmit={handleVerify} className="space-y-5">
-              <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl text-center">
-                <ShieldCheck className="w-10 h-10 text-primary mx-auto mb-2" />
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-center">
+                <Mail className="w-10 h-10 text-blue-600 mx-auto mb-2" />
                 <p className="text-base font-bold text-foreground">{t("login.verifyPrompt")}</p>
+                <p className="text-sm text-muted-foreground mt-1" dir="ltr">{verifyEmail}</p>
               </div>
-
-              {displayedCode && (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
-                  <p className="text-sm text-green-700 font-medium mb-1">{t("login.codeLabel")}</p>
-                  <p className="text-3xl font-bold text-green-800 tracking-[0.3em] dir-ltr">{displayedCode}</p>
-                  <p className="text-xs text-green-600 mt-1">{t("login.codeCopy")}</p>
-                </div>
-              )}
 
               <div className="space-y-1.5">
                 <Label>{t("login.codeInput")}</Label>
@@ -451,22 +438,20 @@ export default function Login() {
 
           {mode === "reset" && (
             <form onSubmit={handleReset} className="space-y-5">
-              {resetToken && (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
-                  <p className="text-sm text-green-700 font-medium mb-1">{t("login.resetCodeLabel")}</p>
-                  <p className="text-2xl font-bold text-green-800 tracking-widest">{resetToken}</p>
-                  <p className="text-xs text-green-600 mt-1">{t("login.resetCodeCopy")}</p>
-                </div>
-              )}
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-center">
+                <Mail className="w-10 h-10 text-blue-600 mx-auto mb-2" />
+                <p className="text-sm text-blue-700 font-medium">{t("login.resetEmailSent")}</p>
+              </div>
               <div className="space-y-1.5">
                 <Label>{t("login.resetCodeInput")}</Label>
                 <Input
                   required
                   dir="ltr"
-                  className="h-12 bg-muted/50 rounded-xl text-center tracking-widest text-lg font-bold"
-                  placeholder="XXXXXXXX"
-                  value={tokenInput || resetToken}
-                  onChange={(e) => setTokenInput(e.target.value.toUpperCase())}
+                  className="h-14 bg-muted/50 rounded-xl text-center tracking-[0.4em] text-2xl font-bold"
+                  placeholder="000000"
+                  maxLength={6}
+                  value={resetCode}
+                  onChange={(e) => setResetCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 />
               </div>
               <div className="space-y-1.5">
