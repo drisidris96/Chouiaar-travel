@@ -178,14 +178,9 @@ router.post("/resend-code", async (req, res) => {
     const code = generateVerificationCode();
     await db.update(usersTable).set({ verificationCode: code }).where(eq(usersTable.id, user.id));
 
-    try {
-      await sendVerificationEmail(user.email, code, user.name);
-    } catch (emailErr) {
-      req.log.error({ emailErr }, "Failed to send verification email");
-    }
-
     res.json({
-      message: "تم إرسال رمز التفعيل إلى بريدك الإلكتروني",
+      message: "تم إرسال رمز التفعيل",
+      verificationCode: code,
     });
   } catch (err) {
     req.log.error({ err }, "Resend code error");
