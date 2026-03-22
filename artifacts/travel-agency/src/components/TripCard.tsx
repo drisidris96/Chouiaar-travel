@@ -2,8 +2,11 @@ import { Link } from "wouter";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { MapPin, Calendar, Users, Star } from "lucide-react";
 import type { Trip } from "@workspace/api-client-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export function TripCard({ trip }: { trip: Trip }) {
+  const { t } = useLanguage();
+
   return (
     <Link href={`/trips/${trip.id}`}>
       <Card className="group overflow-hidden border-border/50 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer h-full flex flex-col bg-background">
@@ -17,7 +20,7 @@ export function TripCard({ trip }: { trip: Trip }) {
           
           {trip.featured && (
             <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-bold shadow-lg shadow-black/20">
-              مميز
+              {t("tripCard.featured")}
             </div>
           )}
           
@@ -44,11 +47,11 @@ export function TripCard({ trip }: { trip: Trip }) {
             <div className="flex items-center gap-3 text-muted-foreground text-sm">
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-4 h-4" />
-                {trip.duration} أيام
+                {trip.duration} {t("tripCard.days")}
               </span>
               <span className="flex items-center gap-1.5">
                 <Users className="w-4 h-4" />
-                {trip.availableSpots} شاغر
+                {trip.availableSpots} {t("tripCard.spots")}
               </span>
             </div>
           </div>
@@ -60,7 +63,7 @@ export function TripCard({ trip }: { trip: Trip }) {
         
         <CardFooter className="border-t border-border/50 pt-4 pb-4 flex justify-center items-center bg-muted/20">
           <div className="text-primary font-semibold text-sm group-hover:underline underline-offset-4 decoration-2">
-            عرض التفاصيل ←
+            {t("tripCard.viewDetails")}
           </div>
         </CardFooter>
       </Card>

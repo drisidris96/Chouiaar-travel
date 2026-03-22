@@ -96,6 +96,15 @@ Generated Zod schemas from the OpenAPI spec (e.g. `HealthCheckResponse`). Used b
 
 Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHealthCheck`, `healthCheck`).
 
+### `artifacts/travel-agency` (`@workspace/travel-agency`)
+
+React + Vite frontend for the travel agency website. Features full i18n (Arabic/French/English) support.
+
+- **i18n system**: `src/i18n/translations.ts` contains all translations. `src/i18n/LanguageContext.tsx` provides `LanguageProvider`, `useLanguage()` hook (returns `{ lang, setLang, t, dir }`), `LanguageSwitcher` component, and flag components (AlgeriaFlag, FranceFlag, UKFlag).
+- **Translation usage**: All pages/components use `const { t } = useLanguage()` and `t("path.key")` for text. Language stored in localStorage key `"lang"`, default `"ar"`.
+- **RTL/LTR**: `LanguageProvider` sets `document.documentElement.dir` and `document.documentElement.lang` based on language. Arabic = RTL, French/English = LTR. `DirectionWrapper` component in `App.tsx` also sets `dir` on the app container.
+- **Admin sidebar**: Tab labels translated via `adminTabsMap` in `App.tsx` (ar/fr/en).
+
 ### `scripts` (`@workspace/scripts`)
 
 Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.

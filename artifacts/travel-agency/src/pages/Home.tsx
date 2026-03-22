@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Globe2, ShieldCheck, HeadphonesIcon, FileText, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function Home() {
   const { data: featuredTrips, isLoading } = useGetTrips({ featured: true });
+  const { t } = useLanguage();
 
   return (
     <div>
-      {/* Hero Section */}
       <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-        {/* landing page hero scenic mountain landscape */}
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1538332576228-eb5b4c4de6f5?q=80&w=2000&auto=format&fit=crop" 
@@ -31,7 +31,6 @@ export default function Home() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="max-w-4xl mx-auto"
           >
-            {/* Agency Logo */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -40,34 +39,34 @@ export default function Home() {
             >
               <img
                 src="/images/logo-chouiaar.jpg"
-                alt="وكالة شويعر للسياحة والأسفار"
+                alt={t("nav.agencyName")}
                 className="h-28 md:h-36 w-auto rounded-2xl shadow-2xl border-2 border-white/20"
               />
             </motion.div>
 
             <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-3 leading-tight">
-              وكالة شويعر
+              {t("home.heroTitle")}
             </h1>
             <p className="text-primary text-xl md:text-2xl font-bold mb-5 tracking-wide">
-              للسياحة والأسفار
+              {t("home.heroSubtitle")}
             </p>
             <p className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed font-light max-w-2xl mx-auto">
-              نقدم لك أرقى الوجهات السياحية وخدمات العمرة والفيزات الإلكترونية وأفضل الرحلات المنظمة لك ولعائلتك.
+              {t("home.heroDesc")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/trips">
                 <Button size="lg" className="w-full sm:w-auto text-lg h-14 px-8 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300">
-                  الرحلات المنظمة
+                  {t("home.trips")}
                 </Button>
               </Link>
               <Link href="/umrah">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg h-14 px-8 rounded-full bg-white/10 text-white border-white/30 hover:bg-white/20 backdrop-blur transition-all duration-300">
-                  باقات العمرة
+                  {t("home.umrahPackages")}
                 </Button>
               </Link>
               <Link href="/contact">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg h-14 px-8 rounded-full bg-white/10 text-white border-white/30 hover:bg-white/20 backdrop-blur transition-all duration-300">
-                  اتصل بنا
+                  {t("home.contactUs")}
                 </Button>
               </Link>
             </div>
@@ -75,20 +74,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services Section */}
       <section className="py-20 bg-background relative">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="text-primary font-bold mb-2 block text-sm uppercase tracking-wider">خدماتنا</span>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">كل ما تحتاجه في مكان واحد</h2>
+            <span className="text-primary font-bold mb-2 block text-sm uppercase tracking-wider">{t("home.servicesLabel")}</span>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">{t("home.servicesTitle")}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {[
-              { icon: Globe2, label: "الرحلات المنظمة", href: "/trips", desc: "رحلات مميزة لأجمل وجهات العالم" },
-              { icon: FileText, label: "الفيزات الإلكترونية", href: "/visas", desc: "استخراج تأشيرات أكثر من 50 دولة" },
-              { icon: Star, label: "العمرة", href: "/umrah", desc: "باقات عمرة فاخرة باسعار مناسبة" },
-              { icon: ShieldCheck, label: "حجوزات آمنة", href: "/trips", desc: "حجز موثوق مع أفضل الشركاء" },
-              { icon: HeadphonesIcon, label: "دعم مستمر", href: "/contact", desc: "خدمة عملاء على مدار الساعة" },
+              { icon: Globe2, label: t("home.svcTrips"), href: "/trips", desc: t("home.svcTripsDesc") },
+              { icon: FileText, label: t("home.svcVisas"), href: "/visas", desc: t("home.svcVisasDesc") },
+              { icon: Star, label: t("home.svcUmrah"), href: "/umrah", desc: t("home.svcUmrahDesc") },
+              { icon: ShieldCheck, label: t("home.svcSafe"), href: "/trips", desc: t("home.svcSafeDesc") },
+              { icon: HeadphonesIcon, label: t("home.svcSupport"), href: "/contact", desc: t("home.svcSupportDesc") },
             ].map((item, i) => (
               <Link key={i} href={item.href}>
                 <div className="flex flex-col items-center text-center p-6 rounded-3xl bg-card border border-border/50 shadow-sm hover:border-primary/40 hover:shadow-lg hover:-translate-y-2 transition-all duration-300 cursor-pointer h-full">
@@ -104,16 +102,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Trips */}
       <section className="py-24 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <span className="text-primary font-bold mb-2 block">عروض خاصة</span>
+            <span className="text-primary font-bold mb-2 block">{t("home.specialOffers")}</span>
             <h2 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6">
-              الرحلات المميزة
+              {t("home.featuredTrips")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              اكتشف أحدث العروض والرحلات الحصرية التي صممناها خصيصاً لعملائنا المميزين.
+              {t("home.featuredDesc")}
             </p>
           </div>
 
@@ -135,14 +132,14 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-center py-20 text-muted-foreground">
-              لا توجد رحلات مميزة حالياً.
+              {t("home.noFeatured")}
             </div>
           )}
 
           <div className="mt-16 text-center">
             <Link href="/trips">
               <Button size="lg" variant="outline" className="h-14 px-10 rounded-full border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300">
-                عرض كل الرحلات
+                {t("home.viewAll")}
               </Button>
             </Link>
           </div>

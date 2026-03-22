@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Clock, MessageCircle, Facebook, Upload, X, FileImage, File } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useRef } from "react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", phone: "", email: "", message: "" });
@@ -9,6 +10,7 @@ export default function Contact() {
   const [sent, setSent] = useState(false);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useLanguage();
 
   const handleFiles = (incoming: FileList | null) => {
     if (!incoming) return;
@@ -39,66 +41,64 @@ export default function Contact() {
   const contacts = [
     {
       icon: Phone,
-      title: "اتصل بنا",
+      title: t("contact.callUs"),
       lines: ["+213 74 71 84 96"],
       color: "bg-green-500/10 text-green-600",
       href: "tel:+21374718496",
     },
     {
       icon: MessageCircle,
-      title: "واتساب",
-      lines: ["تواصل معنا مباشرة", "+213 774 71 84 96"],
+      title: t("contact.whatsapp"),
+      lines: [t("contact.whatsappLine"), "+213 774 71 84 96"],
       color: "bg-emerald-500/10 text-emerald-600",
       href: "https://wa.me/213774718496",
     },
     {
       icon: Mail,
-      title: "البريد الإلكتروني",
+      title: t("contact.emailTitle"),
       lines: ["chouiaartravelagency@gmail.com"],
       color: "bg-blue-500/10 text-blue-600",
       href: "mailto:chouiaartravelagency@gmail.com",
     },
     {
       icon: MapPin,
-      title: "العنوان",
-      lines: ["الجزائر", "وكالة شويعر للسياحة والأسفار"],
+      title: t("contact.addressTitle"),
+      lines: [t("contact.addressLine1"), t("contact.addressLine2")],
       color: "bg-primary/10 text-primary",
     },
     {
       icon: Clock,
-      title: "أوقات العمل",
-      lines: ["السبت - الخميس: 8ص - 9م", "الجمعة: 2م - 9م"],
+      title: t("contact.workHours"),
+      lines: [t("contact.workLine1"), t("contact.workLine2")],
       color: "bg-orange-500/10 text-orange-600",
     },
     {
       icon: Facebook,
-      title: "تابعنا على فيسبوك",
-      lines: ["Chouiaar Travel Agency", "آخر العروض والأخبار"],
+      title: t("contact.facebook"),
+      lines: [t("contact.fbLine1"), t("contact.fbLine2")],
       color: "bg-indigo-500/10 text-indigo-600",
       href: "https://www.facebook.com/share/1CEBKfuqDo/",
     },
   ];
 
   return (
-    <div dir="rtl">
-      {/* Hero */}
+    <div>
       <section className="py-20 bg-gradient-to-br from-primary/10 via-background to-background relative overflow-hidden">
         <div className="container mx-auto px-4 text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="inline-block bg-primary/10 text-primary px-5 py-2 rounded-full text-sm font-bold mb-4">
-              نحن هنا لمساعدتك
+              {t("contact.badge")}
             </span>
             <h1 className="text-4xl md:text-6xl font-serif font-bold mb-5">
-              <span className="text-primary">تواصل</span> معنا
+              <span className="text-primary">{t("contact.title")}</span> {t("contact.titleHighlight")}
             </h1>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              فريقنا جاهز للإجابة على جميع استفساراتك وتقديم أفضل العروض لك ولعائلتك
+              {t("contact.subtitle")}
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Contact Cards */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
@@ -131,33 +131,32 @@ export default function Contact() {
             ))}
           </div>
 
-          {/* Contact Form */}
           <div className="max-w-2xl mx-auto">
             <div className="bg-card border border-border/50 rounded-3xl p-8 md:p-10 shadow-lg">
-              <h2 className="text-3xl font-serif font-bold text-center mb-2">أرسل رسالة</h2>
-              <p className="text-muted-foreground text-center mb-8">سنرد عليك في أقرب وقت ممكن</p>
+              <h2 className="text-3xl font-serif font-bold text-center mb-2">{t("contact.formTitle")}</h2>
+              <p className="text-muted-foreground text-center mb-8">{t("contact.formSubtitle")}</p>
 
               {sent && (
                 <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl text-center font-medium">
-                  ✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.
+                  {t("contact.sentSuccess")}
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-semibold mb-2">الاسم الكامل *</label>
+                    <label className="block text-sm font-semibold mb-2">{t("contact.fullName")} *</label>
                     <input
                       type="text"
                       required
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder="أدخل اسمك الكامل"
+                      placeholder={t("contact.fullNamePh")}
                       className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold mb-2">رقم الهاتف *</label>
+                    <label className="block text-sm font-semibold mb-2">{t("contact.phone")} *</label>
                     <input
                       type="tel"
                       required
@@ -170,7 +169,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2">البريد الإلكتروني</label>
+                  <label className="block text-sm font-semibold mb-2">{t("contact.email")}</label>
                   <input
                     type="email"
                     value={form.email}
@@ -181,24 +180,22 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2">رسالتك *</label>
+                  <label className="block text-sm font-semibold mb-2">{t("contact.message")} *</label>
                   <textarea
                     required
                     rows={4}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder="اكتب استفساراتك أو طلباتك هنا..."
+                    placeholder={t("contact.messagePh")}
                     className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors resize-none"
                   />
                 </div>
 
-                {/* File Upload */}
                 <div>
                   <label className="block text-sm font-semibold mb-2">
-                    المرفقات <span className="text-muted-foreground font-normal">(صور أو ملفات)</span>
+                    {t("contact.attachments")} <span className="text-muted-foreground font-normal">{t("contact.attachmentsSub")}</span>
                   </label>
 
-                  {/* Drop Zone */}
                   <div
                     onClick={() => fileInputRef.current?.click()}
                     onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
@@ -218,9 +215,9 @@ export default function Contact() {
                       <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                         <Upload className="w-6 h-6 text-primary" />
                       </div>
-                      <p className="font-semibold text-foreground">اسحب الملفات هنا أو انقر للاختيار</p>
+                      <p className="font-semibold text-foreground">{t("contact.dropFiles")}</p>
                       <p className="text-sm text-muted-foreground">
-                        يدعم: صور (JPG, PNG, GIF) — PDF — Word — Excel
+                        {t("contact.supportedFiles")}
                       </p>
                     </div>
                   </div>
@@ -234,7 +231,6 @@ export default function Contact() {
                     onChange={(e) => handleFiles(e.target.files)}
                   />
 
-                  {/* File List */}
                   {files.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {files.map((file, idx) => (
@@ -269,14 +265,14 @@ export default function Contact() {
                         </div>
                       ))}
                       <p className="text-xs text-muted-foreground text-center">
-                        {files.length} ملف مرفق
+                        {files.length} {t("contact.filesAttached")}
                       </p>
                     </div>
                   )}
                 </div>
 
                 <Button type="submit" size="lg" className="w-full rounded-full h-13 text-base font-bold">
-                  إرسال الرسالة
+                  {t("contact.send")}
                 </Button>
               </form>
             </div>

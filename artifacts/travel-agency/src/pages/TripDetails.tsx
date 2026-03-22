@@ -10,11 +10,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Calendar, Users, Star, CheckCircle2, Clock } from "lucide-react";
 import { format } from "date-fns";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function TripDetails() {
   const [, params] = useRoute("/trips/:id");
   const tripId = params?.id ? parseInt(params.id, 10) : 0;
   const { toast } = useToast();
+  const { t } = useLanguage();
   
   const { data: trip, isLoading, isError } = useGetTripById(tripId, {
     query: { enabled: !!tripId }
@@ -24,8 +26,8 @@ export default function TripDetails() {
     mutation: {
       onSuccess: () => {
         toast({
-          title: "تم الحجز بنجاح!",
-          description: "سنتواصل معك قريباً لتأكيد تفاصيل الحجز.",
+          title: t("tripDetails.bookingSuccess"),
+          description: t("tripDetails.bookingSuccessDesc"),
         });
         setFormData({
           guestName: "",
@@ -38,8 +40,8 @@ export default function TripDetails() {
       onError: () => {
         toast({
           variant: "destructive",
-          title: "خطأ",
-          description: "حدث خطأ أثناء محاولة الحجز. يرجى المحاولة مرة أخرى.",
+          title: t("tripDetails.bookingError"),
+          description: t("tripDetails.bookingErrorDesc"),
         });
       }
     }
@@ -83,8 +85,8 @@ export default function TripDetails() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center text-center">
         <div>
-          <h2 className="text-2xl font-bold text-destructive mb-2">عذراً، لم نتمكن من العثور على الرحلة</h2>
-          <p className="text-muted-foreground">قد تكون الرحلة غير متاحة أو تم حذفها.</p>
+          <h2 className="text-2xl font-bold text-destructive mb-2">{t("tripDetails.notFound")}</h2>
+          <p className="text-muted-foreground">{t("tripDetails.notFoundDesc")}</p>
         </div>
       </div>
     );
@@ -92,7 +94,6 @@ export default function TripDetails() {
 
   return (
     <div className="bg-background pb-20">
-      {/* Hero Image */}
       <div className="relative h-[50vh] min-h-[400px] w-full">
         <img
           src={trip.imageUrl || `https://picsum.photos/seed/${trip.id}/1920/1080`}
@@ -105,7 +106,6 @@ export default function TripDetails() {
       <div className="container mx-auto px-4 -mt-32 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-10">
             <div className="bg-card rounded-3xl p-8 shadow-xl shadow-black/5 border border-border/50">
               <div className="flex flex-wrap items-center gap-4 text-primary font-medium mb-4">
@@ -115,7 +115,7 @@ export default function TripDetails() {
                 </span>
                 <span className="flex items-center gap-1.5 text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-3 py-1.5 rounded-full">
                   <Star className="w-4 h-4 fill-current" />
-                  {trip.rating} ({trip.reviewCount} تقييم)
+                  {trip.rating} ({trip.reviewCount} {t("tripDetails.review")})
                 </span>
               </div>
               
@@ -129,8 +129,8 @@ export default function TripDetails() {
                     <Clock className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">المدة</p>
-                    <p className="font-bold text-foreground">{trip.duration} أيام</p>
+                    <p className="text-sm text-muted-foreground">{t("tripDetails.duration")}</p>
+                    <p className="font-bold text-foreground">{trip.duration} {t("tripCard.days")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -138,7 +138,7 @@ export default function TripDetails() {
                     <Calendar className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">التاريخ</p>
+                    <p className="text-sm text-muted-foreground">{t("tripDetails.date")}</p>
                     <p className="font-bold text-foreground">
                       {format(new Date(trip.startDate), "dd MMM yyyy")}
                     </p>
@@ -149,14 +149,14 @@ export default function TripDetails() {
                     <Users className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">الشواغر</p>
-                    <p className="font-bold text-foreground">{trip.availableSpots} من {trip.maxCapacity}</p>
+                    <p className="text-sm text-muted-foreground">{t("tripDetails.availableSpots")}</p>
+                    <p className="font-bold text-foreground">{trip.availableSpots} {t("tripDetails.of")} {trip.maxCapacity}</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-2xl font-serif font-bold mb-4">عن الرحلة</h3>
+                <h3 className="text-2xl font-serif font-bold mb-4">{t("tripDetails.aboutTrip")}</h3>
                 <p className="text-muted-foreground leading-relaxed text-lg whitespace-pre-wrap">
                   {trip.description}
                 </p>
@@ -164,7 +164,7 @@ export default function TripDetails() {
 
               {trip.includes && trip.includes.length > 0 && (
                 <div className="mt-10">
-                  <h3 className="text-2xl font-serif font-bold mb-6">ماذا تشمل الرحلة؟</h3>
+                  <h3 className="text-2xl font-serif font-bold mb-6">{t("tripDetails.includes")}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {trip.includes.map((item, idx) => (
                       <div key={idx} className="flex items-start gap-3">
@@ -178,18 +178,17 @@ export default function TripDetails() {
             </div>
           </div>
 
-          {/* Booking Sidebar */}
           <div className="lg:col-span-1">
             <Card className="sticky top-28 border-border/50 shadow-xl shadow-black/5 rounded-3xl overflow-hidden">
               <div className="bg-secondary text-secondary-foreground p-6 text-center">
-                <p className="text-secondary-foreground/80 mb-2">احجز مقعدك الآن</p>
-                <p className="text-sm mt-2 opacity-80">تواصل معنا للحصول على تفاصيل الأسعار</p>
+                <p className="text-secondary-foreground/80 mb-2">{t("tripDetails.bookNow")}</p>
+                <p className="text-sm mt-2 opacity-80">{t("tripDetails.priceContact")}</p>
               </div>
 
               <CardContent className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="space-y-2">
-                    <Label htmlFor="name">الاسم الكامل</Label>
+                    <Label htmlFor="name">{t("tripDetails.fullName")}</Label>
                     <Input 
                       id="name" 
                       required 
@@ -200,7 +199,7 @@ export default function TripDetails() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="email">البريد الإلكتروني</Label>
+                    <Label htmlFor="email">{t("tripDetails.email")}</Label>
                     <Input 
                       id="email" 
                       type="email" 
@@ -213,7 +212,7 @@ export default function TripDetails() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="phone">رقم الهاتف</Label>
+                    <Label htmlFor="phone">{t("tripDetails.phone")}</Label>
                     <Input 
                       id="phone" 
                       required 
@@ -225,7 +224,7 @@ export default function TripDetails() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="people">عدد الأشخاص</Label>
+                    <Label htmlFor="people">{t("tripDetails.numPeople")}</Label>
                     <Input 
                       id="people" 
                       type="number" 
@@ -239,7 +238,7 @@ export default function TripDetails() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="requests">ملاحظات إضافية (اختياري)</Label>
+                    <Label htmlFor="requests">{t("tripDetails.notes")}</Label>
                     <Textarea 
                       id="requests" 
                       className="bg-muted/50 rounded-xl resize-none" 
@@ -255,7 +254,7 @@ export default function TripDetails() {
                       className="w-full h-14 rounded-xl text-lg shadow-lg shadow-primary/25"
                       disabled={createBooking.isPending || trip.availableSpots < 1}
                     >
-                      {createBooking.isPending ? "جاري الحجز..." : "تأكيد الحجز"}
+                      {createBooking.isPending ? t("tripDetails.booking") : t("tripDetails.confirmBooking")}
                     </Button>
                   </div>
                 </form>

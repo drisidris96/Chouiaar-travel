@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { LockKeyhole, UserPlus, KeyRound, CheckCircle, Eye, EyeOff, ShieldCheck, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 type Mode = "login" | "register" | "verify" | "forgot" | "reset" | "done";
 
@@ -17,6 +18,7 @@ export default function Login() {
   const [, setLocation] = useLocation();
   const { login, user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const searchStr = useSearch();
   const initialMode = new URLSearchParams(searchStr).get("tab") === "register" ? "register" : "login";
   const [mode, setMode] = useState<Mode>(initialMode);
@@ -59,13 +61,13 @@ export default function Login() {
         setVerifyEmail(data.email);
         setDisplayedCode(data.verificationCode || "");
         setMode("verify");
-        toast({ title: "الحساب غير مفعّل", description: "أدخل رمز التفعيل المرسل إليك" });
+        toast({ title: t("login.notVerified"), description: t("login.notVerifiedDesc") });
         return;
       }
 
       if (!res.ok) throw new Error(data.message);
 
-      toast({ title: "تم تسجيل الدخول بنجاح" });
+      toast({ title: t("login.loginSuccess") });
 
       if (data.user?.role === "admin") {
         window.location.href = "/admin";
@@ -73,7 +75,7 @@ export default function Login() {
         window.location.href = "/";
       }
     } catch (err: any) {
-      toast({ variant: "destructive", title: "فشل تسجيل الدخول", description: err.message || "تأكد من صحة البريد الإلكتروني وكلمة المرور." });
+      toast({ variant: "destructive", title: t("login.loginFailed"), description: err.message || t("login.loginFailedDesc") });
     } finally {
       setIsLoading(false);
     }
@@ -82,11 +84,11 @@ export default function Login() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (registerForm.password !== registerForm.confirm) {
-      toast({ variant: "destructive", title: "كلمتا المرور غير متطابقتين" });
+      toast({ variant: "destructive", title: t("login.passwordMismatch") });
       return;
     }
     if (registerForm.password.length < 6) {
-      toast({ variant: "destructive", title: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" });
+      toast({ variant: "destructive", title: t("login.passwordMin") });
       return;
     }
     setIsLoading(true);
@@ -108,9 +110,9 @@ export default function Login() {
       setVerifyEmail(registerForm.email);
       setDisplayedCode(data.verificationCode || "");
       setMode("verify");
-      toast({ title: "تم إنشاء الحساب", description: "أدخل رمز التفعيل لتأكيد حسابك" });
+      toast({ title: t("login.accountCreated"), description: t("login.accountCreatedDesc") });
     } catch (err: any) {
-      toast({ variant: "destructive", title: "فشل إنشاء الحساب", description: err.message });
+      toast({ variant: "destructive", title: t("login.createFailed"), description: err.message });
     } finally {
       setIsLoading(false);
     }
@@ -129,7 +131,7 @@ export default function Login() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
-      toast({ title: "تم تفعيل الحساب بنجاح!" });
+      toast({ title: t("login.verified") });
 
       if (data.user?.role === "admin") {
         setLocation("/admin");
@@ -138,7 +140,7 @@ export default function Login() {
       }
       window.location.reload();
     } catch (err: any) {
-      toast({ variant: "destructive", title: "رمز التفعيل غير صحيح", description: err.message });
+      toast({ variant: "destructive", title: t("login.verifyFailed"), description: err.message });
     } finally {
       setIsLoading(false);
     }
@@ -156,9 +158,9 @@ export default function Login() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       setDisplayedCode(data.verificationCode || "");
-      toast({ title: "تم إعادة إرسال رمز التفعيل" });
+      toast({ title: t("login.codeResent") });
     } catch (err: any) {
-      toast({ variant: "destructive", title: "خطأ", description: err.message });
+      toast({ variant: "destructive", title: t("common.error"), description: err.message });
     } finally {
       setIsLoading(false);
     }
@@ -177,9 +179,9 @@ export default function Login() {
       if (!res.ok) throw new Error(data.message);
       setResetToken(data.resetToken);
       setMode("reset");
-      toast({ title: "تم إرسال رمز الاسترجاع" });
+      toast({ title: t("login.resetSent") });
     } catch (err: any) {
-      toast({ variant: "destructive", title: "خطأ", description: err.message });
+      toast({ variant: "destructive", title: t("common.error"), description: err.message });
     } finally {
       setIsLoading(false);
     }
@@ -188,7 +190,7 @@ export default function Login() {
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmNew) {
-      toast({ variant: "destructive", title: "كلمتا المرور غير متطابقتين" });
+      toast({ variant: "destructive", title: t("login.passwordMismatch") });
       return;
     }
     setIsLoading(true);
@@ -202,7 +204,7 @@ export default function Login() {
       if (!res.ok) throw new Error(data.message);
       setMode("done");
     } catch (err: any) {
-      toast({ variant: "destructive", title: "فشل تغيير كلمة المرور", description: err.message });
+      toast({ variant: "destructive", title: t("login.resetFailed"), description: err.message });
     } finally {
       setIsLoading(false);
     }
@@ -216,7 +218,7 @@ export default function Login() {
     }`;
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-16 px-4 relative" dir="rtl">
+    <div className="min-h-[85vh] flex items-center justify-center py-16 px-4 relative">
       <div className="absolute inset-0 bg-[url('/images/login-bg.jpg')] bg-cover bg-center" />
       <div className="absolute inset-0 bg-white/70 backdrop-blur-sm" />
       <Card className="w-full max-w-md shadow-2xl border-none overflow-hidden rounded-3xl relative z-10">
@@ -239,35 +241,35 @@ export default function Login() {
 
         <CardHeader className="text-center pt-12 pb-4">
           <CardTitle className="text-2xl font-serif">
-            {mode === "login" && "تسجيل الدخول"}
-            {mode === "register" && "إنشاء حساب جديد"}
-            {mode === "verify" && "تفعيل الحساب"}
-            {mode === "forgot" && "نسيت كلمة السر؟"}
-            {mode === "reset" && "إعادة تعيين كلمة المرور"}
-            {mode === "done" && "تم بنجاح!"}
+            {mode === "login" && t("login.loginTitle")}
+            {mode === "register" && t("login.registerTitle")}
+            {mode === "verify" && t("login.verifyTitle")}
+            {mode === "forgot" && t("login.forgotTitle")}
+            {mode === "reset" && t("login.resetTitle")}
+            {mode === "done" && t("login.doneTitle")}
           </CardTitle>
           <CardDescription>
-            {mode === "login" && "أدخل بياناتك للوصول لحسابك"}
-            {mode === "register" && "أنشئ حساباً جديداً للاستفادة من خدماتنا"}
-            {mode === "verify" && "أدخل رمز التفعيل المرسل إلى بريدك الإلكتروني"}
-            {mode === "forgot" && "أدخل بريدك الإلكتروني أو رقم هاتفك"}
-            {mode === "reset" && "أدخل الرمز وكلمة المرور الجديدة"}
-            {mode === "done" && "تم تغيير كلمة المرور بنجاح"}
+            {mode === "login" && t("login.loginDesc")}
+            {mode === "register" && t("login.registerDesc")}
+            {mode === "verify" && t("login.verifyDesc")}
+            {mode === "forgot" && t("login.forgotDesc")}
+            {mode === "reset" && t("login.resetDesc")}
+            {mode === "done" && t("login.doneDesc")}
           </CardDescription>
         </CardHeader>
 
         <CardContent className="pb-8">
           {(mode === "login" || mode === "register") && (
             <div className="flex gap-1 bg-muted rounded-2xl p-1 mb-6">
-              <button className={tabClass("login")} onClick={() => setMode("login")}>تسجيل الدخول</button>
-              <button className={tabClass("register")} onClick={() => setMode("register")}>إنشاء حساب</button>
+              <button className={tabClass("login")} onClick={() => setMode("login")}>{t("login.loginTab")}</button>
+              <button className={tabClass("register")} onClick={() => setMode("register")}>{t("login.registerTab")}</button>
             </div>
           )}
 
           {mode === "login" && (
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-1.5">
-                <Label>البريد الإلكتروني</Label>
+                <Label>{t("login.email")}</Label>
                 <Input
                   type="email"
                   required
@@ -278,7 +280,7 @@ export default function Login() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>كلمة المرور</Label>
+                <Label>{t("login.password")}</Label>
                 <div className="relative">
                   <Input
                     type={showPass ? "text" : "password"}
@@ -302,10 +304,10 @@ export default function Login() {
                 onClick={() => setMode("forgot")}
                 className="text-sm text-primary hover:underline w-full text-left"
               >
-                نسيت كلمة السر؟
+                {t("login.forgotLink")}
               </button>
               <Button type="submit" className="w-full h-12 text-base rounded-xl shadow-lg shadow-primary/20" disabled={isLoading}>
-                {isLoading ? "جاري الدخول..." : "تسجيل الدخول"}
+                {isLoading ? t("login.loggingIn") : t("login.loginBtn")}
               </Button>
             </form>
           )}
@@ -313,17 +315,17 @@ export default function Login() {
           {mode === "register" && (
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="space-y-1.5">
-                <Label>الاسم الكامل *</Label>
+                <Label>{t("login.fullName")} *</Label>
                 <Input
                   required
                   className="h-12 bg-muted/50 rounded-xl"
-                  placeholder="أدخل اسمك الكامل"
+                  placeholder={t("login.fullNamePh")}
                   value={registerForm.name}
                   onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>البريد الإلكتروني *</Label>
+                <Label>{t("login.email")} *</Label>
                 <Input
                   type="email"
                   required
@@ -334,7 +336,7 @@ export default function Login() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>رقم الهاتف <span className="text-muted-foreground text-xs">(اختياري)</span></Label>
+                <Label>{t("login.phoneOptional")} <span className="text-muted-foreground text-xs">{t("login.phoneNote")}</span></Label>
                 <Input
                   type="tel"
                   dir="ltr"
@@ -345,7 +347,7 @@ export default function Login() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>كلمة المرور *</Label>
+                <Label>{t("login.password")} *</Label>
                 <div className="relative">
                   <Input
                     type={showPass ? "text" : "password"}
@@ -363,7 +365,7 @@ export default function Login() {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label>تأكيد كلمة المرور *</Label>
+                <Label>{t("login.confirmPassword")} *</Label>
                 <Input
                   type="password"
                   required
@@ -374,7 +376,7 @@ export default function Login() {
                 />
               </div>
               <Button type="submit" className="w-full h-12 text-base rounded-xl shadow-lg shadow-primary/20" disabled={isLoading}>
-                {isLoading ? "جاري الإنشاء..." : "إنشاء الحساب"}
+                {isLoading ? t("login.registering") : t("login.registerBtn")}
               </Button>
             </form>
           )}
@@ -383,19 +385,19 @@ export default function Login() {
             <form onSubmit={handleVerify} className="space-y-5">
               <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl text-center">
                 <ShieldCheck className="w-10 h-10 text-primary mx-auto mb-2" />
-                <p className="text-base font-bold text-foreground">يرجى إدخال رمز التفعيل أدناه</p>
+                <p className="text-base font-bold text-foreground">{t("login.verifyPrompt")}</p>
               </div>
 
               {displayedCode && (
                 <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
-                  <p className="text-sm text-green-700 font-medium mb-1">رمز التفعيل الخاص بك:</p>
+                  <p className="text-sm text-green-700 font-medium mb-1">{t("login.codeLabel")}</p>
                   <p className="text-3xl font-bold text-green-800 tracking-[0.3em] dir-ltr">{displayedCode}</p>
-                  <p className="text-xs text-green-600 mt-1">انسخ الرمز وأدخله في الحقل أدناه</p>
+                  <p className="text-xs text-green-600 mt-1">{t("login.codeCopy")}</p>
                 </div>
               )}
 
               <div className="space-y-1.5">
-                <Label>رمز التفعيل (6 أرقام)</Label>
+                <Label>{t("login.codeInput")}</Label>
                 <Input
                   required
                   dir="ltr"
@@ -408,15 +410,15 @@ export default function Login() {
               </div>
 
               <Button type="submit" className="w-full h-12 text-base rounded-xl shadow-lg shadow-primary/20" disabled={isLoading || verifyCode.length !== 6}>
-                {isLoading ? "جاري التحقق..." : "تفعيل الحساب"}
+                {isLoading ? t("login.verifying") : t("login.verifyBtn")}
               </Button>
 
               <div className="flex items-center justify-between text-sm">
                 <button type="button" onClick={handleResendCode} className="text-primary hover:underline" disabled={isLoading}>
-                  إعادة إرسال الرمز
+                  {t("login.resendCode")}
                 </button>
                 <button type="button" onClick={() => setMode("login")} className="text-muted-foreground hover:text-foreground">
-                  العودة لتسجيل الدخول
+                  {t("login.backToLogin")}
                 </button>
               </div>
             </form>
@@ -425,10 +427,10 @@ export default function Login() {
           {mode === "forgot" && (
             <form onSubmit={handleForgot} className="space-y-5">
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-700 text-center">
-                أدخل بريدك الإلكتروني أو رقم هاتفك المسجل لاسترجاع حسابك
+                {t("login.forgotPrompt")}
               </div>
               <div className="space-y-1.5">
-                <Label>البريد الإلكتروني أو رقم الهاتف</Label>
+                <Label>{t("login.emailOrPhone")}</Label>
                 <Input
                   required
                   dir="ltr"
@@ -439,10 +441,10 @@ export default function Login() {
                 />
               </div>
               <Button type="submit" className="w-full h-12 text-base rounded-xl shadow-lg shadow-primary/20" disabled={isLoading}>
-                {isLoading ? "جاري البحث..." : "إرسال رمز الاسترجاع"}
+                {isLoading ? t("login.searching") : t("login.sendResetCode")}
               </Button>
               <button type="button" onClick={() => setMode("login")} className="w-full text-sm text-muted-foreground hover:text-foreground">
-                العودة لتسجيل الدخول
+                {t("login.backToLogin")}
               </button>
             </form>
           )}
@@ -451,13 +453,13 @@ export default function Login() {
             <form onSubmit={handleReset} className="space-y-5">
               {resetToken && (
                 <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
-                  <p className="text-sm text-green-700 font-medium mb-1">رمز الاسترجاع الخاص بك:</p>
+                  <p className="text-sm text-green-700 font-medium mb-1">{t("login.resetCodeLabel")}</p>
                   <p className="text-2xl font-bold text-green-800 tracking-widest">{resetToken}</p>
-                  <p className="text-xs text-green-600 mt-1">انسخ الرمز وأدخله في الحقل أدناه</p>
+                  <p className="text-xs text-green-600 mt-1">{t("login.resetCodeCopy")}</p>
                 </div>
               )}
               <div className="space-y-1.5">
-                <Label>رمز الاسترجاع</Label>
+                <Label>{t("login.resetCodeInput")}</Label>
                 <Input
                   required
                   dir="ltr"
@@ -468,7 +470,7 @@ export default function Login() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>كلمة المرور الجديدة</Label>
+                <Label>{t("login.newPassword")}</Label>
                 <Input
                   type="password"
                   required
@@ -479,7 +481,7 @@ export default function Login() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>تأكيد كلمة المرور الجديدة</Label>
+                <Label>{t("login.confirmNewPassword")}</Label>
                 <Input
                   type="password"
                   required
@@ -490,7 +492,7 @@ export default function Login() {
                 />
               </div>
               <Button type="submit" className="w-full h-12 text-base rounded-xl shadow-lg shadow-primary/20" disabled={isLoading}>
-                {isLoading ? "جاري الحفظ..." : "تغيير كلمة المرور"}
+                {isLoading ? t("login.saving") : t("login.changePassword")}
               </Button>
             </form>
           )}
@@ -500,9 +502,9 @@ export default function Login() {
               <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto">
                 <CheckCircle className="w-10 h-10 text-green-500" />
               </div>
-              <p className="text-muted-foreground">تم تغيير كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.</p>
+              <p className="text-muted-foreground">{t("login.doneMessage")}</p>
               <Button className="w-full h-12 rounded-xl" onClick={() => setMode("login")}>
-                تسجيل الدخول
+                {t("login.loginNow")}
               </Button>
             </div>
           )}

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { User, Mail, Phone, Lock, Eye, EyeOff, CheckCircle, Shield, Calendar, Edit3, Save, X } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const BASE_URL = import.meta.env.BASE_URL ?? "/";
 const API = BASE_URL.replace(/\/$/, "") + "/api";
@@ -15,6 +16,7 @@ export default function Profile() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { t, lang } = useLanguage();
 
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({ name: "", phone: "" });
@@ -66,10 +68,10 @@ export default function Profile() {
       if (!res.ok) throw new Error(data.message);
       setFullUser(data.user);
       setEditingProfile(false);
-      toast({ title: "تم تحديث البيانات بنجاح" });
+      toast({ title: t("profile.updateSuccess") });
       window.location.reload();
     } catch (err: any) {
-      toast({ variant: "destructive", title: "فشل التحديث", description: err.message });
+      toast({ variant: "destructive", title: t("profile.updateFailed"), description: err.message });
     } finally {
       setProfileLoading(false);
     }
@@ -78,11 +80,11 @@ export default function Profile() {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordForm.new !== passwordForm.confirm) {
-      toast({ variant: "destructive", title: "كلمتا المرور غير متطابقتين" });
+      toast({ variant: "destructive", title: t("profile.passwordMismatch") });
       return;
     }
     if (passwordForm.new.length < 6) {
-      toast({ variant: "destructive", title: "كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل" });
+      toast({ variant: "destructive", title: t("profile.passwordMin") });
       return;
     }
     setPasswordLoading(true);
@@ -97,9 +99,9 @@ export default function Profile() {
       if (!res.ok) throw new Error(data.message);
       setShowPasswordForm(false);
       setPasswordForm({ current: "", new: "", confirm: "" });
-      toast({ title: "تم تغيير كلمة المرور بنجاح" });
+      toast({ title: t("profile.passwordChanged") });
     } catch (err: any) {
-      toast({ variant: "destructive", title: "فشل تغيير كلمة المرور", description: err.message });
+      toast({ variant: "destructive", title: t("profile.passwordChangeFailed"), description: err.message });
     } finally {
       setPasswordLoading(false);
     }
@@ -108,7 +110,7 @@ export default function Profile() {
   const handleEmailChange = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!emailForm.newEmail || !emailForm.password) {
-      toast({ variant: "destructive", title: "جميع الحقول مطلوبة" });
+      toast({ variant: "destructive", title: t("profile.allRequired") });
       return;
     }
     setEmailLoading(true);
@@ -124,10 +126,10 @@ export default function Profile() {
       setFullUser(data.user);
       setShowEmailForm(false);
       setEmailForm({ newEmail: "", password: "" });
-      toast({ title: "تم تغيير البريد الإلكتروني بنجاح" });
+      toast({ title: t("profile.emailChanged") });
       window.location.reload();
     } catch (err: any) {
-      toast({ variant: "destructive", title: "فشل تغيير البريد", description: err.message });
+      toast({ variant: "destructive", title: t("profile.emailChangeFailed"), description: err.message });
     } finally {
       setEmailLoading(false);
     }
@@ -135,14 +137,15 @@ export default function Profile() {
 
   const formatDate = (d: string) => {
     try {
-      return new Date(d).toLocaleDateString("ar-DZ", { year: "numeric", month: "long", day: "numeric" });
+      const locale = lang === "ar" ? "ar-DZ" : lang === "fr" ? "fr-FR" : "en-US";
+      return new Date(d).toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" });
     } catch {
       return d;
     }
   };
 
   return (
-    <div className="min-h-[85vh] py-10 px-4" dir="rtl">
+    <div className="min-h-[85vh] py-10 px-4">
       <div className="container mx-auto max-w-2xl space-y-6">
 
         <div className="text-center mb-8">
@@ -154,7 +157,7 @@ export default function Profile() {
           {userData.role === "admin" && (
             <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-sm font-semibold px-3 py-1 rounded-full mt-2">
               <Shield className="w-3.5 h-3.5" />
-              مدير النظام
+              {t("profile.admin")}
             </span>
           )}
         </div>
@@ -164,17 +167,17 @@ export default function Profile() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <User className="w-5 h-5 text-primary" />
-                المعلومات الشخصية
+                {t("profile.personalInfo")}
               </CardTitle>
               {!editingProfile ? (
                 <Button variant="ghost" size="sm" className="gap-1.5 text-primary" onClick={() => setEditingProfile(true)}>
                   <Edit3 className="w-4 h-4" />
-                  تعديل
+                  {t("profile.edit")}
                 </Button>
               ) : (
                 <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground" onClick={() => setEditingProfile(false)}>
                   <X className="w-4 h-4" />
-                  إلغاء
+                  {t("profile.cancel")}
                 </Button>
               )}
             </div>
@@ -183,28 +186,28 @@ export default function Profile() {
             {!editingProfile ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between py-3 border-b border-border/50">
-                  <span className="text-muted-foreground text-sm">الاسم الكامل</span>
+                  <span className="text-muted-foreground text-sm">{t("profile.fullName")}</span>
                   <span className="font-medium">{userData.name}</span>
                 </div>
                 <div className="flex items-center justify-between py-3 border-b border-border/50">
-                  <span className="text-muted-foreground text-sm">البريد الإلكتروني</span>
+                  <span className="text-muted-foreground text-sm">{t("profile.email")}</span>
                   <span className="font-medium" dir="ltr">{userData.email}</span>
                 </div>
                 <div className="flex items-center justify-between py-3 border-b border-border/50">
-                  <span className="text-muted-foreground text-sm">رقم الهاتف</span>
+                  <span className="text-muted-foreground text-sm">{t("profile.phone")}</span>
                   <span className={`font-medium ${userData.phone ? "" : "text-muted-foreground italic"}`} dir="ltr">
-                    {userData.phone || "غير محدد"}
+                    {userData.phone || t("profile.notSet")}
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-3 border-b border-border/50">
-                  <span className="text-muted-foreground text-sm">حالة الحساب</span>
+                  <span className="text-muted-foreground text-sm">{t("profile.accountStatus")}</span>
                   <span className="inline-flex items-center gap-1.5 text-green-600 text-sm font-medium">
                     <CheckCircle className="w-4 h-4" />
-                    مفعّل
+                    {t("profile.active")}
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-muted-foreground text-sm">تاريخ الإنشاء</span>
+                  <span className="text-muted-foreground text-sm">{t("profile.createdAt")}</span>
                   <span className="flex items-center gap-1.5 text-sm">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     {formatDate(userData.createdAt)}
@@ -214,7 +217,7 @@ export default function Profile() {
             ) : (
               <form onSubmit={handleProfileUpdate} className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label>الاسم الكامل</Label>
+                  <Label>{t("profile.fullName")}</Label>
                   <Input
                     required
                     className="h-12 bg-muted/50 rounded-xl"
@@ -223,7 +226,7 @@ export default function Profile() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>رقم الهاتف</Label>
+                  <Label>{t("profile.phone")}</Label>
                   <Input
                     type="tel"
                     dir="ltr"
@@ -235,7 +238,7 @@ export default function Profile() {
                 </div>
                 <Button type="submit" className="w-full h-12 rounded-xl gap-2" disabled={profileLoading}>
                   <Save className="w-4 h-4" />
-                  {profileLoading ? "جاري الحفظ..." : "حفظ التغييرات"}
+                  {profileLoading ? t("profile.saving") : t("profile.save")}
                 </Button>
               </form>
             )}
@@ -247,29 +250,29 @@ export default function Profile() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Lock className="w-5 h-5 text-primary" />
-                تغيير كلمة المرور
+                {t("profile.changePassword")}
               </CardTitle>
               {!showPasswordForm ? (
                 <Button variant="ghost" size="sm" className="gap-1.5 text-primary" onClick={() => setShowPasswordForm(true)}>
                   <Edit3 className="w-4 h-4" />
-                  تغيير
+                  {t("profile.change")}
                 </Button>
               ) : (
                 <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground" onClick={() => { setShowPasswordForm(false); setPasswordForm({ current: "", new: "", confirm: "" }); }}>
                   <X className="w-4 h-4" />
-                  إلغاء
+                  {t("profile.cancel")}
                 </Button>
               )}
             </div>
             {!showPasswordForm && (
-              <CardDescription>قم بتغيير كلمة المرور الخاصة بحسابك بشكل دوري للحفاظ على أمان حسابك</CardDescription>
+              <CardDescription>{t("profile.changePasswordDesc")}</CardDescription>
             )}
           </CardHeader>
           {showPasswordForm && (
             <CardContent>
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label>كلمة المرور الحالية</Label>
+                  <Label>{t("profile.currentPassword")}</Label>
                   <div className="relative">
                     <Input
                       type={showCurrent ? "text" : "password"}
@@ -285,7 +288,7 @@ export default function Profile() {
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>كلمة المرور الجديدة</Label>
+                  <Label>{t("profile.newPassword")}</Label>
                   <div className="relative">
                     <Input
                       type={showNew ? "text" : "password"}
@@ -302,7 +305,7 @@ export default function Profile() {
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>تأكيد كلمة المرور الجديدة</Label>
+                  <Label>{t("profile.confirmNewPassword")}</Label>
                   <Input
                     type="password"
                     required
@@ -314,7 +317,7 @@ export default function Profile() {
                 </div>
                 <Button type="submit" className="w-full h-12 rounded-xl gap-2" disabled={passwordLoading}>
                   <Lock className="w-4 h-4" />
-                  {passwordLoading ? "جاري التغيير..." : "تغيير كلمة المرور"}
+                  {passwordLoading ? t("profile.changingPassword") : t("profile.changePasswordBtn")}
                 </Button>
               </form>
             </CardContent>
@@ -326,29 +329,29 @@ export default function Profile() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Mail className="w-5 h-5 text-primary" />
-                تغيير البريد الإلكتروني
+                {t("profile.changeEmail")}
               </CardTitle>
               {!showEmailForm ? (
                 <Button variant="ghost" size="sm" className="gap-1.5 text-primary" onClick={() => setShowEmailForm(true)}>
                   <Edit3 className="w-4 h-4" />
-                  تغيير
+                  {t("profile.change")}
                 </Button>
               ) : (
                 <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground" onClick={() => { setShowEmailForm(false); setEmailForm({ newEmail: "", password: "" }); }}>
                   <X className="w-4 h-4" />
-                  إلغاء
+                  {t("profile.cancel")}
                 </Button>
               )}
             </div>
             {!showEmailForm && (
-              <CardDescription>البريد الحالي: <span dir="ltr" className="font-medium">{userData.email}</span></CardDescription>
+              <CardDescription>{t("profile.currentEmail")} <span dir="ltr" className="font-medium">{userData.email}</span></CardDescription>
             )}
           </CardHeader>
           {showEmailForm && (
             <CardContent>
               <form onSubmit={handleEmailChange} className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label>البريد الإلكتروني الجديد</Label>
+                  <Label>{t("profile.newEmail")}</Label>
                   <Input
                     type="email"
                     required
@@ -360,7 +363,7 @@ export default function Profile() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>كلمة المرور (للتأكيد)</Label>
+                  <Label>{t("profile.passwordConfirm")}</Label>
                   <Input
                     type="password"
                     required
@@ -372,7 +375,7 @@ export default function Profile() {
                 </div>
                 <Button type="submit" className="w-full h-12 rounded-xl gap-2" disabled={emailLoading}>
                   <Mail className="w-4 h-4" />
-                  {emailLoading ? "جاري التغيير..." : "تغيير البريد الإلكتروني"}
+                  {emailLoading ? t("profile.changingEmail") : t("profile.changeEmailBtn")}
                 </Button>
               </form>
             </CardContent>

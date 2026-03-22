@@ -5,12 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, SlidersHorizontal } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function Trips() {
   const [destination, setDestination] = useState("");
   const [debouncedDestination, setDebouncedDestination] = useState("");
+  const { t } = useLanguage();
 
-  // Simple debounce for search
   import("react").then(({ useEffect }) => {
     useEffect(() => {
       const handler = setTimeout(() => setDebouncedDestination(destination), 500);
@@ -24,45 +25,41 @@ export default function Trips() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
       <div className="bg-secondary text-secondary-foreground py-20 mb-12">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6">اكتشف وجهتك القادمة</h1>
+          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6">{t("trips.title")}</h1>
           <p className="text-lg text-secondary-foreground/70 max-w-2xl mx-auto">
-            تصفح مجموعتنا الواسعة من الرحلات السياحية واستعد لمغامرة لا تُنسى
+            {t("trips.subtitle")}
           </p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-8">
-        {/* Sidebar Filters */}
         <aside className="w-full lg:w-80 flex-shrink-0">
           <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-lg shadow-black/5 sticky top-28">
             <div className="flex items-center gap-2 mb-6 pb-4 border-b border-border/50">
               <SlidersHorizontal className="w-5 h-5 text-primary" />
-              <h2 className="font-bold text-lg">تصفية النتائج</h2>
+              <h2 className="font-bold text-lg">{t("trips.filter")}</h2>
             </div>
 
             <div className="space-y-8">
               <div className="space-y-3">
-                <Label htmlFor="destination">الوجهة أو الدولة</Label>
+                <Label htmlFor="destination">{t("trips.destination")}</Label>
                 <div className="relative">
                   <Search className="absolute right-3 top-3 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="destination"
-                    placeholder="ابحث عن وجهة..."
+                    placeholder={t("trips.searchPlaceholder")}
                     className="pr-10 rounded-xl bg-muted/50"
                     value={destination}
                     onChange={(e) => setDestination(e.target.value)}
                   />
                 </div>
               </div>
-
             </div>
           </div>
         </aside>
 
-        {/* Trips Grid */}
         <main className="flex-1">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -85,9 +82,9 @@ export default function Trips() {
               <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
                 <Search className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-2xl font-bold mb-2">لا توجد نتائج</h3>
+              <h3 className="text-2xl font-bold mb-2">{t("trips.noResults")}</h3>
               <p className="text-muted-foreground max-w-md">
-                لم نتمكن من العثور على رحلات تطابق معايير البحث الخاصة بك. جرب تغيير الوجهة.
+                {t("trips.noResultsDesc")}
               </p>
             </div>
           )}

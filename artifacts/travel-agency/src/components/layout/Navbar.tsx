@@ -1,64 +1,65 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, Home, FileText, Star, CalendarCheck, Phone, Sparkles, User, LogIn, UserPlus, Lock } from "lucide-react";
+import { LogOut, LayoutDashboard, Home, FileText, Star, CalendarCheck, Phone, Sparkles, User, LogIn, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { ServiceRequestModal } from "@/components/ServiceRequestModal";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage, LanguageSwitcher } from "@/i18n/LanguageContext";
 
 export function Navbar() {
   const [location, setLocation] = useLocation();
   const { user, logout } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const requireAuth = (e: React.MouseEvent, href: string) => {
     if (!user) {
       e.preventDefault();
       toast({
         variant: "destructive",
-        title: "يجب تسجيل الدخول أولاً",
-        description: "سجّل دخولك أو أنشئ حساباً جديداً للوصول إلى هذه الصفحة",
+        title: t("nav.mustLogin"),
+        description: t("nav.mustLoginDesc"),
       });
       setLocation("/login");
     }
   };
 
   const links = [
-    { href: "/",             label: "الرئيسية",            icon: Home },
-    { href: "/visas",        label: "الفيزات الإلكترونية",  icon: FileText },
-    { href: "/umrah",        label: "العمرة",                icon: Star },
-    { href: "/reservations", label: "الحجوزات",              icon: CalendarCheck },
-    { href: "/contact",      label: "اتصل بنا",              icon: Phone },
+    { href: "/",             label: t("nav.home"),         icon: Home },
+    { href: "/visas",        label: t("nav.visas"),        icon: FileText },
+    { href: "/umrah",        label: t("nav.umrah"),        icon: Star },
+    { href: "/reservations", label: t("nav.reservations"), icon: CalendarCheck },
+    { href: "/contact",      label: t("nav.contact"),      icon: Phone },
   ];
 
   return (
     <>
       <header className="sticky top-0 z-50 w-full shadow-md">
-        {/* Main Row: Logo + Name + Actions */}
         <div className="bg-background/95 backdrop-blur border-b border-border/40">
           <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-            {/* Logo + Name */}
             <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
               <img
                 src="/images/logo-chouiaar.jpg"
-                alt="وكالة شويعر"
+                alt={t("nav.agencyName")}
                 className="h-14 w-auto rounded-xl object-contain border border-border/30 group-hover:scale-105 transition-transform duration-300"
               />
               <div className="hidden sm:flex flex-col leading-tight">
-                <span className="text-xl md:text-2xl font-extrabold text-black" style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif" }}>وكالة شويعر للسياحة والأسفار</span>
-                <span className="text-xs md:text-sm font-semibold text-black/50 tracking-[0.15em]" style={{ fontFamily: "'Inter', sans-serif" }}>CHOUIAAR TRAVEL AGENCY</span>
+                <span className="text-xl md:text-2xl font-extrabold text-black" style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif" }}>{t("nav.agencyName")}</span>
+                <span className="text-xs md:text-sm font-semibold text-black/50 tracking-[0.15em]" style={{ fontFamily: "'Inter', sans-serif" }}>{t("nav.agencyNameEn")}</span>
               </div>
             </Link>
 
             <div className="flex items-center gap-2">
+              <LanguageSwitcher />
               {user ? (
                 <>
                   {user.role === "admin" && (
                     <Link href="/admin">
                       <Button variant={location.startsWith("/admin") ? "default" : "outline"} size="sm" className="gap-1.5 rounded-full">
                         <LayoutDashboard className="w-4 h-4" />
-                        <span className="hidden sm:inline">لوحة التحكم</span>
+                        <span className="hidden sm:inline">{t("nav.dashboard")}</span>
                       </Button>
                     </Link>
                   )}
@@ -75,7 +76,7 @@ export function Navbar() {
                     onClick={() => logout()}
                   >
                     <LogOut className="w-4 h-4" />
-                    <span className="hidden sm:inline">خروج</span>
+                    <span className="hidden sm:inline">{t("nav.logout")}</span>
                   </Button>
                 </>
               ) : (
@@ -87,7 +88,7 @@ export function Navbar() {
                       className="rounded-full font-semibold px-4 border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all gap-1.5"
                     >
                       <LogIn className="w-4 h-4" />
-                      <span className="hidden sm:inline">تسجيل الدخول</span>
+                      <span className="hidden sm:inline">{t("nav.login")}</span>
                     </Button>
                   </Link>
                   <Link href="/login?tab=register">
@@ -96,7 +97,7 @@ export function Navbar() {
                       className="rounded-full font-semibold px-4 gap-1.5"
                     >
                       <UserPlus className="w-4 h-4" />
-                      <span className="hidden sm:inline">إنشاء حساب</span>
+                      <span className="hidden sm:inline">{t("nav.register")}</span>
                     </Button>
                   </Link>
                 </>
@@ -105,7 +106,6 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* ── Nav Buttons Row (ALL screen sizes) ── */}
         <div className="bg-background border-b border-border/40 overflow-x-auto">
           <div className="flex items-center justify-center gap-2 px-4 py-2.5 min-w-max mx-auto">
             {links.map((link) => {
@@ -118,8 +118,8 @@ export function Navbar() {
                     if (!user) {
                       toast({
                         variant: "destructive",
-                        title: "يجب تسجيل الدخول أولاً",
-                        description: "سجّل دخولك أو أنشئ حساباً جديداً للوصول إلى هذه الصفحة",
+                        title: t("nav.mustLogin"),
+                        description: t("nav.mustLoginDesc"),
                       });
                       setLocation("/login");
                       return;
@@ -138,7 +138,6 @@ export function Navbar() {
               );
             })}
 
-            {/* ── خدمات أخرى button ── */}
             <button
               onClick={(e) => {
                 if (!user) {
@@ -150,13 +149,12 @@ export function Navbar() {
               className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 border bg-gradient-to-l from-violet-500 to-primary text-white border-transparent shadow-md shadow-primary/20 hover:opacity-90 hover:scale-105"
             >
               <Sparkles className="w-4 h-4 flex-shrink-0" />
-              خدمات أخرى
+              {t("nav.otherServices")}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Service Request Modal */}
       <ServiceRequestModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </>
   );
