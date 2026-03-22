@@ -36,10 +36,6 @@ const gregorianMonthsEn = [
   "July", "August", "September", "October", "November", "December",
 ];
 
-function toArabicNumerals(num: number): string {
-  return num.toString().replace(/[0-9]/g, (d) => "٠١٢٣٤٥٦٧٨٩"[parseInt(d)]);
-}
-
 export function ClockBar() {
   const { lang } = useLanguage();
   const [now, setNow] = useState(new Date());
@@ -55,22 +51,15 @@ export function ClockBar() {
 
   const hijri = toHijri(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
-  const useArabicNums = lang === "ar";
-
   const hijriMonths = lang === "ar" ? hijriMonthsAr : lang === "fr" ? hijriMonthsFr : hijriMonthsEn;
   const gregMonths = lang === "ar" ? gregorianMonthsAr : lang === "fr" ? gregorianMonthsFr : gregorianMonthsEn;
 
-  const hijriDate = useArabicNums
-    ? `${toArabicNumerals(hijri.hd)} ${hijriMonths[hijri.hm - 1]} ${toArabicNumerals(hijri.hy)} هـ`
-    : `${hijri.hd} ${hijriMonths[hijri.hm - 1]} ${hijri.hy}`;
+  const hijriSuffix = lang === "ar" ? " هـ" : lang === "fr" ? " H" : " AH";
+  const gregSuffix = lang === "ar" ? " م" : "";
 
-  const gregDate = useArabicNums
-    ? `${toArabicNumerals(now.getDate())} ${gregMonths[now.getMonth()]} ${toArabicNumerals(now.getFullYear())} م`
-    : `${now.getDate()} ${gregMonths[now.getMonth()]} ${now.getFullYear()}`;
-
-  const timeDisplay = useArabicNums
-    ? `${toArabicNumerals(parseInt(hours))}:${toArabicNumerals(parseInt(minutes))}:${toArabicNumerals(parseInt(seconds))}`
-    : `${hours}:${minutes}:${seconds}`;
+  const hijriDate = `${hijri.hd} ${hijriMonths[hijri.hm - 1]} ${hijri.hy}${hijriSuffix}`;
+  const gregDate = `${now.getDate()} ${gregMonths[now.getMonth()]} ${now.getFullYear()}${gregSuffix}`;
+  const timeDisplay = `${hours}:${minutes}:${seconds}`;
 
   return (
     <div className="bg-[#1B3A5C] text-white py-1.5 px-4">
