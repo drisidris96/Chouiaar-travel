@@ -62,10 +62,12 @@ export function Navbar() {
                       </Button>
                     </Link>
                   )}
-                  <div className="flex items-center gap-1.5 bg-muted/60 rounded-full px-3 py-1.5">
-                    <User className="w-4 h-4 text-primary" />
-                    <span className="text-xs font-medium hidden sm:inline max-w-[100px] truncate">{user.name}</span>
-                  </div>
+                  <Link href="/profile">
+                    <div className="flex items-center gap-1.5 bg-muted/60 rounded-full px-3 py-1.5 cursor-pointer hover:bg-primary/10 transition-colors">
+                      <User className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-medium hidden sm:inline max-w-[100px] truncate">{user.name}</span>
+                    </div>
+                  </Link>
                   <Button
                     variant="ghost"
                     size="sm"

@@ -265,6 +265,7 @@ router.get("/me", async (req, res) => {
       id: user.id,
       email: user.email,
       name: user.name,
+      phone: user.phone,
       role: user.role,
       verified: user.verified,
       createdAt: user.createdAt,
@@ -272,6 +273,135 @@ router.get("/me", async (req, res) => {
   } catch (err) {
     req.log.error({ err }, "Get me error");
     res.status(500).json({ error: "internal_error", message: "Internal server error" });
+  }
+});
+
+router.put("/profile", async (req, res) => {
+  try {
+    const userId = (req.session as any).userId;
+    if (!userId) {
+      res.status(401).json({ error: "unauthorized", message: "يجب تسجيل الدخول" });
+      return;
+    }
+
+    const { name, phone } = req.body;
+    const updates: Record<string, any> = {};
+    if (name && name.trim()) updates.name = name.trim();
+    if (phone !== undefined) updates.phone = phone || null;
+
+    if (Object.keys(updates).length === 0) {
+      res.status(400).json({ error: "bad_request", message: "لا توجد بيانات للتحديث" });
+      return;
+    }
+
+    const [updated] = await db.update(usersTable).set(updates).where(eq(usersTable.id, userId)).returning();
+    res.json({
+      message: "تم تحديث البيانات بنجاح",
+      user: {
+        id: updated.id,
+        email: updated.email,
+        name: updated.name,
+        phone: updated.phone,
+        role: updated.role,
+        verified: updated.verified,
+        createdAt: updated.createdAt,
+      },
+    });
+  } catch (err) {
+    req.log.error({ err }, "Update profile error");
+    res.status(500).json({ error: "internal_error", message: "خطأ في الخادم" });
+  }
+});
+
+router.put("/change-password", async (req, res) => {
+  try {
+    const userId = (req.session as any).userId;
+    if (!userId) {
+      res.status(401).json({ error: "unauthorized", message: "يجب تسجيل الدخول" });
+      return;
+    }
+
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ error: "bad_request", message: "كلمة المرور الحالية والجديدة مطلوبتان" });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      res.status(400).json({ error: "bad_request", message: "كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل" });
+      return;
+    }
+
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId));
+    if (!user) {
+      res.status(404).json({ error: "not_found", message: "المستخدم غير موجود" });
+      return;
+    }
+
+    const hashedCurrent = hashPassword(currentPassword);
+    if (user.password !== hashedCurrent) {
+      res.status(400).json({ error: "wrong_password", message: "كلمة المرور الحالية غير صحيحة" });
+      return;
+    }
+
+    const hashedNew = hashPassword(newPassword);
+    await db.update(usersTable).set({ password: hashedNew }).where(eq(usersTable.id, userId));
+
+    res.json({ message: "تم تغيير كلمة المرور بنجاح" });
+  } catch (err) {
+    req.log.error({ err }, "Change password error");
+    res.status(500).json({ error: "internal_error", message: "خطأ في الخادم" });
+  }
+});
+
+router.put("/change-email", async (req, res) => {
+  try {
+    const userId = (req.session as any).userId;
+    if (!userId) {
+      res.status(401).json({ error: "unauthorized", message: "يجب تسجيل الدخول" });
+      return;
+    }
+
+    const { newEmail, password } = req.body;
+    if (!newEmail || !password) {
+      res.status(400).json({ error: "bad_request", message: "البريد الإلكتروني الجديد وكلمة المرور مطلوبان" });
+      return;
+    }
+
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId));
+    if (!user) {
+      res.status(404).json({ error: "not_found", message: "المستخدم غير موجود" });
+      return;
+    }
+
+    const hashed = hashPassword(password);
+    if (user.password !== hashed) {
+      res.status(400).json({ error: "wrong_password", message: "كلمة المرور غير صحيحة" });
+      return;
+    }
+
+    const [existing] = await db.select().from(usersTable).where(eq(usersTable.email, newEmail));
+    if (existing && existing.id !== userId) {
+      res.status(409).json({ error: "conflict", message: "هذا البريد الإلكتروني مستخدم بالفعل" });
+      return;
+    }
+
+    const [updated] = await db.update(usersTable).set({ email: newEmail }).where(eq(usersTable.id, userId)).returning();
+    res.json({
+      message: "تم تغيير البريد الإلكتروني بنجاح",
+      user: {
+        id: updated.id,
+        email: updated.email,
+        name: updated.name,
+        phone: updated.phone,
+        role: updated.role,
+        verified: updated.verified,
+        createdAt: updated.createdAt,
+      },
+    });
+  } catch (err) {
+    req.log.error({ err }, "Change email error");
+    res.status(500).json({ error: "internal_error", message: "خطأ في الخادم" });
   }
 });
 

@@ -23,6 +23,7 @@ import ManageBookings from "@/pages/admin/ManageBookings";
 import ManageReservations from "@/pages/admin/ManageReservations";
 import ManageServiceRequests from "@/pages/admin/ManageServiceRequests";
 import ManageVisaRequests from "@/pages/admin/ManageVisaRequests";
+import Profile from "@/pages/Profile";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -106,6 +107,7 @@ function Router() {
           <Route path="/contact" component={Contact} />
           <Route path="/reservations" component={Reservations} />
           <Route path="/login" component={Login} />
+          <Route path="/profile" component={Profile} />
 
           {/* Admin Routes */}
           <Route path="/admin">
