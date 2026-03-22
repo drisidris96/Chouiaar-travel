@@ -13,23 +13,39 @@ function generateResetToken(): string {
   return crypto.randomBytes(4).toString("hex").toUpperCase();
 }
 
+function generateVerificationCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      res.status(400).json({ error: "bad_request", message: "Email and password are required" });
+      res.status(400).json({ error: "bad_request", message: "البريد الإلكتروني وكلمة المرور مطلوبان" });
       return;
     }
 
     const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email));
     if (!user) {
-      res.status(401).json({ error: "unauthorized", message: "Invalid credentials" });
+      res.status(401).json({ error: "unauthorized", message: "بيانات الدخول غير صحيحة" });
       return;
     }
 
     const hashed = hashPassword(password);
     if (user.password !== hashed) {
-      res.status(401).json({ error: "unauthorized", message: "Invalid credentials" });
+      res.status(401).json({ error: "unauthorized", message: "بيانات الدخول غير صحيحة" });
+      return;
+    }
+
+    if (!user.verified && user.role !== "admin") {
+      const code = generateVerificationCode();
+      await db.update(usersTable).set({ verificationCode: code }).where(eq(usersTable.id, user.id));
+      res.status(403).json({
+        error: "not_verified",
+        message: "الحساب غير مفعّل. تم إرسال رمز التفعيل",
+        verificationCode: code,
+        email: user.email,
+      });
       return;
     }
 
@@ -41,13 +57,14 @@ router.post("/login", async (req, res) => {
         email: user.email,
         name: user.name,
         role: user.role,
+        verified: user.verified,
         createdAt: user.createdAt,
       },
       message: "تم تسجيل الدخول بنجاح",
     });
   } catch (err) {
     req.log.error({ err }, "Login error");
-    res.status(500).json({ error: "internal_error", message: "Internal server error" });
+    res.status(500).json({ error: "internal_error", message: "خطأ في الخادم" });
   }
 });
 
@@ -55,7 +72,7 @@ router.post("/register", async (req, res) => {
   try {
     const { email, password, name, phone } = req.body;
     if (!email || !password || !name) {
-      res.status(400).json({ error: "bad_request", message: "Name, email and password are required" });
+      res.status(400).json({ error: "bad_request", message: "الاسم والبريد الإلكتروني وكلمة المرور مطلوبة" });
       return;
     }
 
@@ -66,26 +83,106 @@ router.post("/register", async (req, res) => {
     }
 
     const hashed = hashPassword(password);
+    const verificationCode = generateVerificationCode();
+
     const [user] = await db
       .insert(usersTable)
-      .values({ email, password: hashed, name, phone: phone || null, role: "user" })
+      .values({
+        email,
+        password: hashed,
+        name,
+        phone: phone || null,
+        role: "user",
+        verified: false,
+        verificationCode,
+      })
       .returning();
+
+    res.status(201).json({
+      message: "تم إنشاء الحساب. أدخل رمز التفعيل لتأكيد حسابك",
+      verificationCode,
+      email: user.email,
+    });
+  } catch (err) {
+    req.log.error({ err }, "Register error");
+    res.status(500).json({ error: "internal_error", message: "خطأ في الخادم" });
+  }
+});
+
+router.post("/verify", async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    if (!email || !code) {
+      res.status(400).json({ error: "bad_request", message: "البريد الإلكتروني والرمز مطلوبان" });
+      return;
+    }
+
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email));
+    if (!user) {
+      res.status(404).json({ error: "not_found", message: "الحساب غير موجود" });
+      return;
+    }
+
+    if (user.verified) {
+      res.json({ message: "الحساب مفعّل مسبقاً" });
+      return;
+    }
+
+    if (user.verificationCode !== code) {
+      res.status(400).json({ error: "invalid_code", message: "رمز التفعيل غير صحيح" });
+      return;
+    }
+
+    await db.update(usersTable).set({ verified: true, verificationCode: null }).where(eq(usersTable.id, user.id));
 
     (req.session as any).userId = user.id;
 
-    res.status(201).json({
+    res.json({
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
         role: user.role,
+        verified: true,
         createdAt: user.createdAt,
       },
-      message: "تم إنشاء الحساب بنجاح",
+      message: "تم تفعيل الحساب بنجاح! 🎉",
     });
   } catch (err) {
-    req.log.error({ err }, "Register error");
-    res.status(500).json({ error: "internal_error", message: "Internal server error" });
+    req.log.error({ err }, "Verify error");
+    res.status(500).json({ error: "internal_error", message: "خطأ في الخادم" });
+  }
+});
+
+router.post("/resend-code", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      res.status(400).json({ error: "bad_request", message: "البريد الإلكتروني مطلوب" });
+      return;
+    }
+
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email));
+    if (!user) {
+      res.status(404).json({ error: "not_found", message: "الحساب غير موجود" });
+      return;
+    }
+
+    if (user.verified) {
+      res.json({ message: "الحساب مفعّل مسبقاً" });
+      return;
+    }
+
+    const code = generateVerificationCode();
+    await db.update(usersTable).set({ verificationCode: code }).where(eq(usersTable.id, user.id));
+
+    res.json({
+      message: "تم إرسال رمز التفعيل",
+      verificationCode: code,
+    });
+  } catch (err) {
+    req.log.error({ err }, "Resend code error");
+    res.status(500).json({ error: "internal_error", message: "خطأ في الخادم" });
   }
 });
 
@@ -93,7 +190,7 @@ router.post("/forgot-password", async (req, res) => {
   try {
     const { emailOrPhone } = req.body;
     if (!emailOrPhone) {
-      res.status(400).json({ error: "bad_request", message: "Email or phone required" });
+      res.status(400).json({ error: "bad_request", message: "البريد الإلكتروني أو رقم الهاتف مطلوب" });
       return;
     }
 
@@ -116,7 +213,7 @@ router.post("/forgot-password", async (req, res) => {
     });
   } catch (err) {
     req.log.error({ err }, "Forgot password error");
-    res.status(500).json({ error: "internal_error", message: "Internal server error" });
+    res.status(500).json({ error: "internal_error", message: "خطأ في الخادم" });
   }
 });
 
@@ -124,7 +221,7 @@ router.post("/reset-password", async (req, res) => {
   try {
     const { token, newPassword } = req.body;
     if (!token || !newPassword) {
-      res.status(400).json({ error: "bad_request", message: "Token and new password required" });
+      res.status(400).json({ error: "bad_request", message: "الرمز وكلمة المرور الجديدة مطلوبان" });
       return;
     }
 
@@ -140,7 +237,7 @@ router.post("/reset-password", async (req, res) => {
     res.json({ message: "تم تغيير كلمة المرور بنجاح" });
   } catch (err) {
     req.log.error({ err }, "Reset password error");
-    res.status(500).json({ error: "internal_error", message: "Internal server error" });
+    res.status(500).json({ error: "internal_error", message: "خطأ في الخادم" });
   }
 });
 
@@ -169,6 +266,7 @@ router.get("/me", async (req, res) => {
       email: user.email,
       name: user.name,
       role: user.role,
+      verified: user.verified,
       createdAt: user.createdAt,
     });
   } catch (err) {

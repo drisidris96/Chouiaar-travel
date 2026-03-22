@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, bookingsTable, tripsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import { requireAdmin } from "../middleware/requireAdmin";
 
 const router: IRouter = Router();
 
@@ -178,14 +179,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", requireAdmin, async (req, res) => {
   try {
-    const userId = (req.session as any).userId;
-    if (!userId) {
-      res.status(403).json({ error: "forbidden", message: "Admin access required" });
-      return;
-    }
-
     const id = parseInt(req.params.id);
     const { status } = req.body;
 

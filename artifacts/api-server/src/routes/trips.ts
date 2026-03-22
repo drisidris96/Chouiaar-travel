@@ -1,15 +1,9 @@
 import { Router, type IRouter } from "express";
 import { db, tripsTable } from "@workspace/db";
 import { eq, ilike, gte, lte, and, type SQL } from "drizzle-orm";
+import { requireAdmin } from "../middleware/requireAdmin";
 
 const router: IRouter = Router();
-
-function requireAdmin(req: any, res: any, next: any) {
-  if (!req.session?.adminUser) {
-    return res.status(403).json({ error: "forbidden", message: "Admin access required" });
-  }
-  next();
-}
 
 router.get("/", async (req, res) => {
   try {
@@ -55,14 +49,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", requireAdmin, async (req, res) => {
   try {
-    const userId = (req.session as any).userId;
-    if (!userId) {
-      res.status(403).json({ error: "forbidden", message: "Admin access required" });
-      return;
-    }
-
     const { title, description, destination, country, imageUrl, price, duration, maxCapacity, startDate, endDate, featured, includes } = req.body;
 
     const [trip] = await db.insert(tripsTable).values({
@@ -88,14 +76,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", requireAdmin, async (req, res) => {
   try {
-    const userId = (req.session as any).userId;
-    if (!userId) {
-      res.status(403).json({ error: "forbidden", message: "Admin access required" });
-      return;
-    }
-
     const id = parseInt(req.params.id);
     const { title, description, destination, country, imageUrl, price, duration, maxCapacity, startDate, endDate, featured, includes } = req.body;
 
@@ -126,14 +108,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireAdmin, async (req, res) => {
   try {
-    const userId = (req.session as any).userId;
-    if (!userId) {
-      res.status(403).json({ error: "forbidden", message: "Admin access required" });
-      return;
-    }
-
     const id = parseInt(req.params.id);
     await db.delete(tripsTable).where(eq(tripsTable.id, id));
     res.json({ success: true, message: "Trip deleted" });

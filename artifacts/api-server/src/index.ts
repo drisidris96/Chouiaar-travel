@@ -28,6 +28,7 @@ async function seedAdmin() {
         password: hashed,
         name: "مدير النظام",
         role: "admin",
+        verified: true,
       });
       logger.info("Admin account created: admin@travel.com");
     } else {

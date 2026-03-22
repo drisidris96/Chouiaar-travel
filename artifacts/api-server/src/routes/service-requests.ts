@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, serviceRequestsTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
+import { requireAdmin } from "../middleware/requireAdmin";
 
 const router: IRouter = Router();
 
@@ -22,13 +23,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", requireAdmin, async (req, res) => {
   try {
-    const userId = (req.session as any).userId;
-    if (!userId) {
-      res.status(401).json({ error: "unauthorized", message: "غير مصرح" });
-      return;
-    }
     const requests = await db.select().from(serviceRequestsTable).orderBy(desc(serviceRequestsTable.createdAt));
     res.json({ requests });
   } catch (err) {
@@ -37,13 +33,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.patch("/:id/status", async (req, res) => {
+router.patch("/:id/status", requireAdmin, async (req, res) => {
   try {
-    const userId = (req.session as any).userId;
-    if (!userId) {
-      res.status(401).json({ error: "unauthorized", message: "غير مصرح" });
-      return;
-    }
     const { status } = req.body;
     const [updated] = await db
       .update(serviceRequestsTable)

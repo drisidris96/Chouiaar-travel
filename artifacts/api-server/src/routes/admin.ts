@@ -1,16 +1,12 @@
 import { Router, type IRouter } from "express";
 import { db, bookingsTable, tripsTable } from "@workspace/db";
 import { eq, count, sum } from "drizzle-orm";
+import { requireAdmin } from "../middleware/requireAdmin";
 
 const router: IRouter = Router();
 
-router.get("/stats", async (req, res) => {
+router.get("/stats", requireAdmin, async (req, res) => {
   try {
-    const userId = (req.session as any).userId;
-    if (!userId) {
-      res.status(403).json({ error: "forbidden", message: "Admin access required" });
-      return;
-    }
 
     const [tripsCount] = await db.select({ count: count() }).from(tripsTable);
     const [bookingsCount] = await db.select({ count: count() }).from(bookingsTable);

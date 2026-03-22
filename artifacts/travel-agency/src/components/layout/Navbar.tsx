@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, Home, FileText, Star, CalendarCheck, Phone, Sparkles } from "lucide-react";
+import { LogOut, LayoutDashboard, Home, FileText, Star, CalendarCheck, Phone, Sparkles, User, LogIn } from "lucide-react";
 import { useState } from "react";
 import { ServiceRequestModal } from "@/components/ServiceRequestModal";
 
@@ -42,7 +42,6 @@ export function Navbar() {
               </div>
             </Link>
 
-            {/* Actions */}
             <div className="flex items-center gap-2">
               {user ? (
                 <>
@@ -50,10 +49,14 @@ export function Navbar() {
                     <Link href="/admin">
                       <Button variant={location.startsWith("/admin") ? "default" : "outline"} size="sm" className="gap-1.5 rounded-full">
                         <LayoutDashboard className="w-4 h-4" />
-                        <span className="hidden sm:inline">الإدارة</span>
+                        <span className="hidden sm:inline">لوحة التحكم</span>
                       </Button>
                     </Link>
                   )}
+                  <div className="flex items-center gap-1.5 bg-muted/60 rounded-full px-3 py-1.5">
+                    <User className="w-4 h-4 text-primary" />
+                    <span className="text-xs font-medium hidden sm:inline max-w-[100px] truncate">{user.name}</span>
+                  </div>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -69,9 +72,10 @@ export function Navbar() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="rounded-full font-semibold px-4 border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all"
+                    className="rounded-full font-semibold px-4 border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all gap-1.5"
                   >
-                    دخول الإدارة
+                    <LogIn className="w-4 h-4" />
+                    <span className="hidden sm:inline">تسجيل الدخول</span>
                   </Button>
                 </Link>
               )}

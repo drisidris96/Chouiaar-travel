@@ -36,7 +36,30 @@ export interface User {
   email: string;
   name: string;
   role: UserRole;
+  verified?: boolean;
   createdAt: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  name: string;
+  phone?: string;
+}
+
+export interface VerifyRequest {
+  email: string;
+  code: string;
+}
+
+export interface ResendCodeRequest {
+  email: string;
+}
+
+export interface VerificationResponse {
+  message: string;
+  verificationCode?: string;
+  email?: string;
 }
 
 export interface AuthResponse {

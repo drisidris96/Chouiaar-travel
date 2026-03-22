@@ -54,9 +54,14 @@ Every package extends `tsconfig.base.json` which sets `composite: true`. The roo
 
 Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` for request and response validation and `@workspace/db` for persistence.
 
-- Entry: `src/index.ts` — reads `PORT`, starts Express
-- App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, routes at `/api`
-- Routes: `src/routes/index.ts` mounts sub-routers; `src/routes/health.ts` exposes `GET /health` (full path: `/api/health`)
+- Entry: `src/index.ts` — reads `PORT`, starts Express, seeds admin account
+- App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, express-session, routes at `/api`
+- Routes: `src/routes/index.ts` mounts sub-routers
+- Middleware: `src/middleware/requireAdmin.ts` — RBAC middleware for admin-only routes (checks user role in DB), also exports `requireAuth`
+- Auth: `src/routes/auth.ts` — login, register, verify (email code), resend-code, forgot-password, reset-password, logout, me
+- Admin routes protected with `requireAdmin` middleware: admin/stats, trips (POST/PUT/DELETE), bookings (PATCH), reservations (GET/PATCH), service-requests (GET/PATCH), visa-requests (GET/PATCH)
+- Admin credentials: `admin@travel.com` / `admin123` (auto-seeded, verified=true)
+- Auth flow: register → 6-digit verification code → verify → login; unverified users prompted to verify on login attempt
 - Depends on: `@workspace/db`, `@workspace/api-zod`
 - `pnpm --filter @workspace/api-server run dev` — run the dev server
 - `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)

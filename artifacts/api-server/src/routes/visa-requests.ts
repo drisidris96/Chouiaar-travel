@@ -5,6 +5,7 @@ import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { requireAdmin } from "../middleware/requireAdmin";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadsDir = path.resolve(__dirname, "../../uploads/visas");
@@ -84,13 +85,8 @@ router.post(
   }
 );
 
-router.get("/", async (req, res) => {
+router.get("/", requireAdmin, async (req, res) => {
   try {
-    const userId = (req.session as any).userId;
-    if (!userId) {
-      res.status(401).json({ error: "unauthorized", message: "غير مصرح" });
-      return;
-    }
     const visaRequests = await db.select().from(visaRequestsTable).orderBy(desc(visaRequestsTable.createdAt));
     res.json({ visaRequests });
   } catch (err) {
@@ -99,13 +95,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.patch("/:id/status", async (req, res) => {
+router.patch("/:id/status", requireAdmin, async (req, res) => {
   try {
-    const userId = (req.session as any).userId;
-    if (!userId) {
-      res.status(401).json({ error: "unauthorized", message: "غير مصرح" });
-      return;
-    }
     const { status, adminNotes } = req.body;
     const updateData: any = { status };
     if (adminNotes !== undefined) updateData.adminNotes = adminNotes;
