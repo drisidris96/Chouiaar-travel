@@ -35,23 +35,21 @@ export function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full shadow-md">
-        {/* Main Row: Logo + Agency Name (center) + Actions */}
+        {/* Main Row: Logo + Name + Actions */}
         <div className="bg-background/95 backdrop-blur border-b border-border/40">
-          <div className="container mx-auto px-4 h-20 flex items-center justify-between relative">
-            {/* Logo */}
-            <Link href="/" className="flex items-center group flex-shrink-0">
+          <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+            {/* Logo + Name */}
+            <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
               <img
                 src="/images/logo-chouiaar.jpg"
                 alt="وكالة شويعر"
                 className="h-14 w-auto rounded-xl object-contain border border-border/30 group-hover:scale-105 transition-transform duration-300"
               />
+              <div className="hidden sm:flex flex-col leading-tight">
+                <span className="text-xl md:text-2xl font-extrabold text-black" style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif" }}>وكالة شويعر للسياحة والأسفار</span>
+                <span className="text-xs md:text-sm font-semibold text-black/50 tracking-[0.15em]" style={{ fontFamily: "'Inter', sans-serif" }}>CHOUIAAR TRAVEL AGENCY</span>
+              </div>
             </Link>
-
-            {/* Agency Name - Centered */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center leading-tight">
-              <span className="text-xl md:text-2xl font-extrabold text-black" style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif" }}>وكالة شويعر للسياحة والأسفار</span>
-              <span className="text-xs md:text-sm font-semibold text-black/50 tracking-[0.15em]" style={{ fontFamily: "'Inter', sans-serif" }}>CHOUIAAR TRAVEL AGENCY</span>
-            </div>
 
             <div className="flex items-center gap-2">
               {user ? (
