@@ -21,24 +21,19 @@ export function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full shadow-md">
-        {/* Top Bar */}
-        <div className="bg-primary text-primary-foreground text-center py-1.5 text-sm font-semibold tracking-wide">
-          وكالة شويعر للسياحة والأسفار &nbsp;|&nbsp; Chouiaar Travel Agency
-        </div>
-
         {/* Main Row: Logo + Actions */}
         <div className="bg-background/95 backdrop-blur border-b border-border/40">
           <div className="container mx-auto px-4 h-16 flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+            <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
               <img
                 src="/images/logo-chouiaar.jpg"
                 alt="وكالة شويعر"
                 className="h-12 w-auto rounded-xl object-contain border border-border/30 group-hover:scale-105 transition-transform duration-300"
               />
               <div className="hidden sm:flex flex-col leading-tight">
-                <span className="text-base font-bold text-foreground font-serif">وكالة شويعر</span>
-                <span className="text-xs text-muted-foreground">للسياحة والأسفار</span>
+                <span className="text-lg font-extrabold text-black" style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif" }}>وكالة شويعر</span>
+                <span className="text-xs font-semibold text-black/60" style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif" }}>للسياحة والأسفار</span>
               </div>
             </Link>
 

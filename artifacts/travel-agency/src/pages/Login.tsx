@@ -216,10 +216,12 @@ export default function Login() {
     }`;
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center bg-muted/30 py-16 px-4" dir="rtl">
-      <Card className="w-full max-w-md shadow-2xl border-none overflow-hidden rounded-3xl">
+    <div className="min-h-[85vh] flex items-center justify-center py-16 px-4 relative" dir="rtl">
+      <div className="absolute inset-0 bg-[url('/images/login-bg.jpg')] bg-cover bg-center" />
+      <div className="absolute inset-0 bg-white/70 backdrop-blur-sm" />
+      <Card className="w-full max-w-md shadow-2xl border-none overflow-hidden rounded-3xl relative z-10">
         <div className="h-28 bg-secondary flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20 bg-[url('https://pixabay.com/get/g2f61475b8824638980ec4a4d5b15a45a081b485f90d295cf6219c081b4bfeef3790834500ff785b687354820061fb67848d6d0ffc5959368b0edda725ef7a64b_1280.jpg')] bg-cover bg-center" />
+          <div className="absolute inset-0 opacity-20 bg-[url('/images/login-bg.jpg')] bg-cover bg-center" />
           <div className="w-14 h-14 rounded-2xl bg-white shadow-xl flex items-center justify-center relative z-10 translate-y-7">
             {mode === "register" ? (
               <UserPlus className="w-7 h-7 text-primary" />
