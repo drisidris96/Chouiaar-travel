@@ -1,44 +1,35 @@
 import { BlurView } from "expo-blur";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
-import { SymbolView } from "expo-symbols";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Platform, StyleSheet, View, useColorScheme } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Colors from "@/constants/colors";
 
-//IMPORTANT: iOS 26 Exists, feel free to use NativeTabs for native tabs with liquid glass support.
-function NativeTabLayout() {
-  return (
-    <NativeTabs>
-      <NativeTabs.Trigger name="index">
-        <Icon sf={{ default: "house", selected: "house.fill" }} />
-        <Label>Home</Label>
-      </NativeTabs.Trigger>
-    </NativeTabs>
-  );
-}
-
 function ClassicTabLayout() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const isDark = useColorScheme() === "dark";
   const isIOS = Platform.OS === "ios";
   const isWeb = Platform.OS === "web";
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.light.tint,
+        headerShown: false,
+        tabBarActiveTintColor: Colors.light.primary,
         tabBarInactiveTintColor: Colors.light.tabIconDefault,
-        headerShown: true,
+        tabBarLabelStyle: {
+          fontFamily: "Cairo_600SemiBold",
+          fontSize: 11,
+        },
         tabBarStyle: {
-          position: "absolute",
+          position: "absolute" as const,
           backgroundColor: isIOS ? "transparent" : isDark ? "#000" : "#fff",
           borderTopWidth: isWeb ? 1 : 0,
-          borderTopColor: isDark ? "#333" : "#ccc",
+          borderTopColor: isDark ? "#333" : Colors.light.borderLight,
           elevation: 0,
+          paddingBottom: isWeb ? 0 : undefined,
           ...(isWeb ? { height: 84 } : {}),
         },
         tabBarBackground: () =>
@@ -61,13 +52,46 @@ function ClassicTabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) =>
-            isIOS ? (
-              <SymbolView name="house" tintColor={color} size={24} />
-            ) : (
-              <Feather name="home" size={22} color={color} />
-            ),
+          title: "الرئيسية",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="trips"
+        options={{
+          title: "الرحلات",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="airplane" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="umrah"
+        options={{
+          title: "العمرة",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="star" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="visas"
+        options={{
+          title: "التأشيرات",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="document-text" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="more"
+        options={{
+          title: "المزيد",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="menu" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
@@ -75,8 +99,5 @@ function ClassicTabLayout() {
 }
 
 export default function TabLayout() {
-  if (isLiquidGlassAvailable()) {
-    return <NativeTabLayout />;
-  }
   return <ClassicTabLayout />;
 }
